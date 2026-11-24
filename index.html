@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d98e04">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bienenbuch">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Bienenbuch</title>
+<style>
+:root{--h1:#f6b81a;--h2:#d98e04;--h3:#9a5d00;--hd:#a86400;--wax:#fff1c2;--bg:#fbf5e6;--card:#fff;--tx:#3a2a14;--mu:#8a7a5f;--ln:#ecdfc3;--chip:#f6ead0;--ok:#3f7d22;--warn:#b85a10;--red:#b3261e;--acc:#9a5d00;
+--slab:Rockwell,"Roboto Slab","Zilla Slab",Georgia,serif}
+@media(prefers-color-scheme:dark){:root{--bg:#16120c;--card:#241d13;--tx:#f3e9d3;--mu:#b4a383;--ln:#3a3020;--chip:#32281a;--wax:#4a3a17;--acc:#f6b81a}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+button{font:inherit;cursor:pointer;color:inherit}
+header{background:linear-gradient(165deg,var(--h1),var(--h2) 60%,var(--hd));color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;position:sticky;top:0;z-index:20}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='10'%3E%3Cpath d='M0 0H28V2L21 10H7L0 2Z' fill='%23a86400'/%3E%3C/svg%3E") repeat-x;background-size:28px 10px}
+.hdin{display:flex;align-items:center;gap:10px;max-width:900px;margin:0 auto}
+.hdin>div{flex:1;min-width:0}
+header h1{font-family:var(--slab);font-size:22px;margin:0;letter-spacing:.3px;text-shadow:0 1px 2px rgba(80,40,0,.35)}
+#hsub{font-size:13px;opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#syncBtn{border:0;background:rgba(255,255,255,.22);color:#fff;border-radius:99px;padding:6px 10px;font-size:13px;white-space:nowrap}
+main{padding:22px 12px calc(96px + env(safe-area-inset-bottom));max-width:900px;margin:0 auto}
+.card{background:var(--card);border-radius:16px;padding:12px 14px;margin:0 0 12px;box-shadow:0 1px 3px rgba(90,55,0,.12)}
+.card.tap{cursor:pointer}
+h2{font-family:var(--slab);font-size:18px;margin:18px 4px 8px;color:var(--acc)}
+h2:first-child{margin-top:4px}
+h4{margin:12px 0 6px;font-size:14px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 3px rgba(90,55,0,.12);cursor:pointer}
+.tile .v{font-size:25px;font-weight:700;font-family:var(--slab);line-height:1.15}
+.tile .l{font-size:13px;color:var(--mu)}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row .grow{flex:1;min-width:0}
+.row .t1{font-weight:600}
+.sm{font-size:13px;color:var(--mu)}
+.r{text-align:right}
+.nw{white-space:nowrap}
+.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;background:var(--chip);white-space:nowrap}
+.b-ok{background:#dcefcf;color:#2d5a18}.b-warn{background:#fde2c8;color:#8a3a0a}.b-red{background:#f8d3cf;color:#8a1c14}.b-blue{background:#d8e6f7;color:#1d4a7a}
+@media(prefers-color-scheme:dark){.b-ok{background:#2c4220;color:#cfe8bf}.b-warn{background:#4a3016;color:#f8d2a8}.b-red{background:#4a1f1b;color:#f5c2bc}.b-blue{background:#1f3047;color:#c4d8f2}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible;padding-bottom:4px}
+.chip{border:1px solid var(--ln);background:var(--card);border-radius:99px;padding:7px 12px;font-size:14px;white-space:nowrap}
+.chip.on{background:var(--h2);border-color:var(--h2);color:#fff}
+.seg{display:flex;background:var(--chip);border-radius:12px;padding:3px;margin:0 0 12px}
+.seg button{flex:1;border:0;background:none;padding:8px 4px;border-radius:10px;font-weight:600;color:var(--mu);font-size:14px}
+.seg button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--tx);-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
+input[type=checkbox]{width:22px;height:22px;-webkit-appearance:checkbox;appearance:auto;margin:0;accent-color:var(--h2);flex:none}
+input.bad,select.bad{border-color:var(--red);box-shadow:0 0 0 2px rgba(179,38,30,.2)}
+textarea{min-height:70px;resize:vertical}
+.search{margin-bottom:10px}
+.f{display:block;margin:0 0 11px}
+.f>span,.fl{display:block;font-size:13px;color:var(--mu);margin:0 0 4px;font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 8px}
+.ck{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:15px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;background:var(--h2);color:#fff}
+.btn2{background:var(--chip);color:var(--tx)}
+.btnd{background:none;color:var(--red);border:1.5px solid var(--red)}
+.btnd.armed{background:var(--red);color:#fff}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btns .btn{flex:1 1 auto}
+.mini{border:0;background:var(--chip);border-radius:8px;padding:4px 9px;font-size:13px;font-weight:600}
+.qa{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qa button{border:0;background:var(--wax);border-radius:14px;padding:12px 4px;font-weight:600;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.qa button b{font-size:22px;font-weight:normal}
+#tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom);z-index:30;box-shadow:0 -2px 8px rgba(90,55,0,.08)}
+#tabs button{flex:1;border:0;background:none;padding:6px 0 5px;font-size:10px;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0}
+#tabs button b{font-size:21px;font-weight:normal;line-height:1.15;filter:grayscale(.7);opacity:.75}
+#tabs button.on{color:var(--acc);font-weight:700}
+#tabs button.on b{filter:none;opacity:1}
+#fab{position:fixed;right:14px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:25;border:0;border-radius:99px;padding:14px 20px;font-weight:700;font-size:16px;background:var(--h2);color:#fff;box-shadow:0 4px 14px rgba(120,70,0,.4)}
+.ov{position:fixed;inset:0;background:rgba(30,20,5,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.sh{background:var(--card);width:100%;max-width:640px;max-height:92vh;max-height:92dvh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;animation:up .22s ease-out}
+.shh{display:flex;align-items:center;padding:14px 16px 8px;gap:8px}
+.shh h3{flex:1;margin:0;font-family:var(--slab);font-size:19px}
+.x{border:0;background:var(--chip);border-radius:99px;width:36px;height:36px;font-size:18px;flex:none}
+.shb{overflow:auto;padding:4px 16px 14px;-webkit-overflow-scrolling:touch;flex:1}
+.shf{display:flex;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--ln)}
+.shf .btn{flex:1}
+@media(min-width:700px){.ov{align-items:center}.sh{border-radius:20px;max-height:86vh}}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@keyframes fade{from{opacity:0}}
+.bars{display:flex;align-items:flex-end;gap:5px;height:130px;padding-top:16px}
+.bc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.bar{width:100%;background:linear-gradient(var(--h1),var(--h2));border-radius:6px 6px 2px 2px;min-height:2px}
+.bv{font-size:11px;font-weight:700;margin-bottom:2px}
+.bl{font-size:10px;color:var(--mu);margin-top:3px;white-space:nowrap}
+.hb{height:9px;background:var(--chip);border-radius:6px;overflow:hidden;margin-top:4px}
+.hb i{display:block;height:100%;background:linear-gradient(90deg,var(--h1),var(--h2));border-radius:6px}
+.qd{display:inline-block;width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35);vertical-align:-2px;flex:none}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+.t th,.t td{padding:6px 4px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}
+.t th{font-size:12px;color:var(--mu);font-weight:600}
+.t tr:last-child td{border-bottom:0}
+.t td.r,.t th.r{text-align:right}
+.t tfoot td{font-weight:700;border-top:2px solid var(--ln)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px}
+.kv>div:nth-child(odd){color:var(--mu);font-size:13px;padding-top:2px}
+.task{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer}
+.task:last-child{border-bottom:0}
+.task .ic{font-size:18px;line-height:1.2;flex:none}
+.empty{color:var(--mu);text-align:center;padding:18px 8px;font-size:15px}
+.hint{background:var(--wax);border-radius:12px;padding:10px 12px;font-size:14px;margin:0 0 12px}
+.vk{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--ln)}
+.vk:last-child{border:0}
+.ernt td input{padding:7px 8px;text-align:right}
+.ring{width:56px;height:56px;flex:none}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#3a2a14;color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:.2s;pointer-events:none;z-index:300;max-width:90vw;text-align:center;font-size:15px}
+#toast.on{opacity:1;transform:translateX(-50%)}
+#lock{position:fixed;inset:0;z-index:200;background:linear-gradient(165deg,var(--h1),var(--h2) 55%,var(--hd));display:flex;align-items:center;justify-content:center;padding:24px}
+#lock .box{background:var(--card);border-radius:22px;padding:24px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 30px rgba(60,30,0,.35)}
+#lock img{width:84px;height:84px;border-radius:20px;margin-bottom:6px}
+#lock h2{margin:4px 0 14px;font-size:24px}
+#lock input{margin-bottom:10px;text-align:center}
+#lock .btn{width:100%;margin-top:4px}
+.linkbtn{border:0;background:none;color:var(--mu);text-decoration:underline;margin-top:12px;font-size:14px}
+.menu .row{padding:13px 0}
+.menu .row b{font-size:20px;font-weight:normal;width:28px;text-align:center}
+.cl h5{margin:12px 0 4px;font-size:15px}
+.cl ul{margin:0;padding-left:20px;font-size:14px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="lock" hidden></div>
+<header><div class="hdin"><div><h1>🐝 Bienenbuch</h1><div id="hsub"></div></div><button id="syncBtn" onclick="openSync()">☁️</button></div></header>
+<main id="main"></main>
+<button id="fab" hidden></button>
+<nav id="tabs"></nav>
+<div id="sheets"></div>
+<div id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+<script>
+"use strict";
+/* =====================================================================
+   BIENENBUCH – Völker, Stockkarte, Behandlungen, Fütterung, Lager,
+   Honigernte, Finanzen. Eine Datei, kein Framework.
+   ===================================================================== */
+const APP_VERSION = "1.0.0";
+const CHANGELOG = [
+  { v: "1.0.0", d: "2026-11-24", items: [
+    "Erste Version: Völker & Standorte (Achenmühle, Kühlsöd, Sinkenbach), Königinnen mit Farbe nach Jahrgang, Ableger",
+    "Stockkarte (Durchsichten) mit „Speichern & nächstes Volk“",
+    "Behandlungen (Bestandsbuch), Mittel-Liste, Fütterung",
+    "Lager mit Mindestbestand und automatischer Ab-/Zubuchung",
+    "Honigernte je Standort und Volk mit Auswertung",
+    "Finanzen mit Kunden, Kategorie-Vorschlag und offenen Beträgen",
+    "Offline nutzbar, Cloud-Sync (Firebase), App-Sperre, Sicherung"
+  ]}
+];
+
+/* ---------- Firebase-Zugang (aus der Firebase-Konsole einfügen) ----------
+   Leer lassen = Konfiguration kann auch in der App unter ☁️ eingefügt werden. */
+const FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+const FIREBASE_VERSION = "11.10.0";
+
+/* ============================ Hilfsfunktionen ============================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const p2 = n => String(n).padStart(2, "0");
+const isoOf = d => d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+const today = () => isoOf(new Date());
+const thisYear = () => new Date().getFullYear();
+const fmtD = s => s ? s.slice(0, 10).split("-").reverse().join(".") : "";
+const fmtDs = s => s ? fmtD(s).slice(0, 6) : "";
+const yearOf = s => s ? +String(s).slice(0, 4) : null;
+const addDays = (s, n) => { const d = new Date(s + "T12:00:00"); d.setDate(d.getDate() + n); return isoOf(d); };
+const daysBetween = (a, b) => Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5);
+const num = v => { if (v === "" || v == null) return null; const n = parseFloat(String(v).replace(/\s/g, "").replace(",", ".")); return isNaN(n) ? null : n; };
+const fN = (n, d = 1) => (n ?? 0).toLocaleString("de-DE", { maximumFractionDigits: d });
+const eur = n => (n ?? 0).toLocaleString("de-DE", { style: "currency", currency: "EUR" });
+const kg = n => fN(n) + " kg";
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const sum = (a, f) => a.reduce((s, x) => s + (f(x) || 0), 0);
+const byStr = k => (a, b) => String(a[k] ?? "").localeCompare(String(b[k] ?? ""), "de", { numeric: true });
+const nowIso = () => new Date().toISOString();
+const SEED_TS = "2000-01-01T00:00:00.000Z";
+
+function toast(msg, ms = 2200) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), ms); }
+
+/* ============================== Datenhaltung ============================== */
+const LS = "bienenbuch_store", LS_SH = "bienenbuch_shadow", LS_LOCK = "bienenbuch_lock", LS_UI = "bienenbuch_ui", LS_FB = "bienenbuch_fbcfg", LS_VER = "bienenbuch_ver";
+const COLS = ["standorte", "voelker", "koeniginnen", "durchsichten", "behandlungen", "mittel", "fuetterung", "artikel", "lagerbew", "ernte", "finanzen", "kunden", "meta"];
+
+function emptyStore() { const s = {}; COLS.forEach(c => s[c] = {}); return s; }
+function seed(s) {
+  const add = (c, o) => { o.geaendert = SEED_TS; s[c][o.id] = o; };
+  [["st-achenmuehle", "Achenmühle"], ["st-kuehlsoed", "Kühlsöd"], ["st-sinkenbach", "Sinkenbach"]].forEach(([id, name], i) => add("standorte", { id, name, pos: i + 1, adresse: "", notiz: "" }));
+  [
+    ["mi-as60", "Ameisensäure 60 % ad us. vet.", "Ameisensäure", "Verdunster, nach Packungsbeilage"],
+    ["mi-oxuvar", "Oxalsäure-Lösung (z. B. Oxuvar)", "Oxalsäure", "Träufeln/Sprühen, brutfrei"],
+    ["mi-ms15", "Milchsäure 15 % ad us. vet.", "Milchsäure", "Sprühen, brutfrei"],
+    ["mi-thymol", "Thymol-Präparat (z. B. Thymovar)", "Thymol", "Streifen"]
+  ].forEach(([id, name, wirkstoff, dosierung]) => add("mittel", { id, name, wirkstoff, dosierung, wzHonig: 0, notiz: "Wartezeit bitte mit Packungsbeilage prüfen" }));
+  [
+    ["ar-honig", "Honig (lose, Eimer)", "Honig", "kg", 0],
+    ["ar-glas500", "Honiggläser 500 g", "Gläser & Verpackung", "Stück", 100],
+    ["ar-glas250", "Honiggläser 250 g", "Gläser & Verpackung", "Stück", 50],
+    ["ar-deckel", "Deckel", "Gläser & Verpackung", "Stück", 100],
+    ["ar-etikett", "Etiketten / Gewährverschlüsse", "Gläser & Verpackung", "Stück", 100],
+    ["ar-sirup", "Futtersirup", "Futter", "kg", 50],
+    ["ar-teig", "Futterteig", "Futter", "kg", 10],
+    ["ar-mw", "Mittelwände", "Wachs & Mittelwände", "Stück", 30],
+    ["ar-raehm", "Rähmchen", "Rähmchen & Beuten", "Stück", 20]
+  ].forEach(([id, name, kategorie, einheit, mindest]) => add("artikel", { id, name, kategorie, einheit, mindest, notiz: "" }));
+  add("meta", { id: "betrieb", imker: "Elena", varroaGrenze: 10 });
+}
+function loadStore() {
+  try { const s = JSON.parse(localStorage.getItem(LS)); if (s && typeof s === "object") { COLS.forEach(c => s[c] = s[c] || {}); return s; } } catch (e) {}
+  const s = emptyStore(); seed(s); return s;
+}
+let store = loadStore();
+let shadow = (() => { try { return JSON.parse(localStorage.getItem(LS_SH)) || {}; } catch (e) { return {}; } })();
+let ui = (() => { try { return Object.assign({ tab: "start", sub: {}, f: {} }, JSON.parse(localStorage.getItem(LS_UI)) || {}); } catch (e) { return { tab: "start", sub: {}, f: {} }; } })();
+const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify(ui)); } catch (e) {} };
+const saveShadow = () => { try { localStorage.setItem(LS_SH, JSON.stringify(shadow)); } catch (e) {} };
+
+function saveStore() {
+  try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) { toast("⚠️ Speicher voll – bitte Sicherung erstellen"); }
+  schedulePush();
+}
+function put(c, d, silent) { d = { ...d }; d.id = d.id || uid(); d.geaendert = nowIso(); store[c][d.id] = d; if (!silent) { saveStore(); refresh(); } return d.id; }
+function del(c, id, silent) { delete store[c][id]; if (!silent) { saveStore(); refresh(); } }
+const S = { db: {
+  doc(p) { const [c, id] = p.split("/"); return { set: d => put(c, { ...d, id }), delete: () => del(c, id) }; },
+  collection(c) { return { add: d => put(c, d) }; }
+}};
+const all = c => Object.values(store[c] || {});
+const get = (c, id) => (store[c] || {})[id];
+const meta = () => get("meta", "betrieb") || {};
+
+/* ============================== Fachlogik ============================== */
+const aktiv = v => !v.status || v.status === "aktiv";
+const standorte = () => all("standorte").sort((a, b) => (a.pos ?? 99) - (b.pos ?? 99) || a.name.localeCompare(b.name));
+const stName = id => get("standorte", id)?.name || "–";
+const voelker = (nurAktiv = true) => all("voelker").filter(v => !nurAktiv || aktiv(v)).sort(byStr("nr"));
+const vLabel = v => v ? "Volk " + v.nr + (v.name ? " „" + v.name + "“" : "") : "?";
+const vById = id => get("voelker", id);
+const vName = id => vLabel(vById(id));
+const QCOL = ["#2f6fd6", "#ffffff", "#f2c200", "#d8322b", "#3aa34a"]; // 0/5 blau, 1/6 weiß, 2/7 gelb, 3/8 rot, 4/9 grün
+const QNAME = ["blau", "weiß", "gelb", "rot", "grün"];
+const qColor = j => j ? QCOL[j % 5] : "transparent";
+const qDot = j => j ? `<span class="qd" style="background:${qColor(j)}" title="${QNAME[j % 5]}"></span>` : "";
+const koenigin = volkId => all("koeniginnen").filter(k => k.volkId === volkId && (!k.status || k.status === "aktiv")).sort((a, b) => String(b.eingesetzt || b.jahr).localeCompare(String(a.eingesetzt || a.jahr)))[0];
+const durchsichtenV = volkId => all("durchsichten").filter(d => d.volkId === volkId).sort(byStr("datum")).reverse();
+const lastDS = volkId => durchsichtenV(volkId)[0];
+const bestand = artId => sum(all("lagerbew").filter(b => b.artikelId === artId), b => b.menge);
+const pflichtFehlt = v => { const f = []; if (!v.nr) f.push("Nummer"); if (!v.standortId) f.push("Standort"); if (!v.beute) f.push("Beute"); if (!v.herkunft) f.push("Herkunft"); if (aktiv(v) && !koenigin(v.id)) f.push("Königin"); return f; };
+const nextVolkNr = () => { const n = all("voelker").map(v => parseInt(v.nr)).filter(x => !isNaN(x)); return String(n.length ? Math.max(...n) + 1 : 1); };
+const honigVolk = (volkId, jahr) => sum(all("ernte").filter(e => !jahr || yearOf(e.datum) === jahr), e => sum((e.posten || []).filter(p => p.volkId === volkId), p => p.kg));
+const umfangText = ids => {
+  const akt = voelker().map(v => v.id);
+  if (ids.length && akt.length && akt.every(id => ids.includes(id)) && ids.length === akt.length) return "alle Völker (" + ids.length + ")";
+  const st = standorte().filter(s => { const vs = akt.filter(id => vById(id).standortId === s.id); return vs.length && vs.every(id => ids.includes(id)); });
+  const stIds = new Set(st.map(s => s.id));
+  const rest = ids.filter(id => !stIds.has(vById(id)?.standortId));
+  if (st.length && !rest.length) return st.map(s => s.name).join(", ") + " (" + ids.length + ")";
+  if (ids.length === 1) return vName(ids[0]);
+  return ids.length + " Völker";
+};
+const years = (...cols) => { const s = new Set([thisYear()]); cols.forEach(c => all(c).forEach(x => { const y = yearOf(x.datum); if (y) s.add(y); })); return [...s].sort((a, b) => b - a); };
+
+/* Automatische Lagerbuchung zu einem Eintrag (Fütterung, Behandlung, Ernte, Finanzen) */
+function autoLager(srcId, artikelId, menge, datum, text) {
+  const id = "auto-" + srcId;
+  if (artikelId && menge) put("lagerbew", { id, artikelId, menge, datum, text, ref: srcId }, true);
+  else if (store.lagerbew[id]) del("lagerbew", id, true);
+}
+
+/* Finanzen */
+const KAT_EIN = ["Honigverkauf", "Wachs", "Völker & Königinnen", "Zuschüsse / Förderung", "Privateinlage", "Sonstige"];
+const KAT_AUS = ["Völker & Königinnen", "Futter", "Behandlungsmittel", "Gläser & Etiketten", "Beuten & Rähmchen", "Geräte & Ausrüstung", "Beiträge & Versicherung", "Fahrtkosten", "Sonstige"];
+const KAT_HINT = { ein: [[/honig|glas|gläser/i, "Honigverkauf"], [/wachs|kerze/i, "Wachs"], [/ableger|volk|völker|königin|schwarm/i, "Völker & Königinnen"], [/zuschuss|förder|prämie|beihilfe/i, "Zuschüsse / Förderung"], [/privat|einlage/i, "Privateinlage"]],
+  aus: [[/zucker|sirup|futter|invert|apiinvert|teig/i, "Futter"], [/ameisen|oxal|milchsäure|thymo|varroa|medik|apotheke/i, "Behandlungsmittel"], [/glas|gläser|deckel|etikett|gewähr/i, "Gläser & Etiketten"], [/beute|rähmchen|zarge|mittelw|boden|deckel.*beute/i, "Beuten & Rähmchen"], [/königin|ableger|volk|völker|schwarm/i, "Völker & Königinnen"], [/schleuder|smoker|stockmei|anzug|schleier|handschuh|werkzeug|gerät|abfüll|sieb|eimer/i, "Geräte & Ausrüstung"], [/verein|versicherung|beitrag|gebühr|tierseuchen/i, "Beiträge & Versicherung"], [/diesel|benzin|tank|fahrt|km/i, "Fahrtkosten"]] };
+const katVorschlag = (art, text) => { for (const [re, k] of KAT_HINT[art] || []) if (re.test(text || "")) return k; return ""; };
+const imErgebnis = f => !(f.art === "ein" && f.kategorie === "Privateinlage");
+const nextFinNr = j => { const n = all("finanzen").filter(f => yearOf(f.datum) === j).map(f => +f.nr || 0); return (n.length ? Math.max(...n) : 0) + 1; };
+const offen = f => f.betrag == null || f.betrag === "";
+
+/* ============================== Oberfläche ============================== */
+const TABS = [["start", "🏠", "Start"], ["voelker", "🐝", "Völker"], ["stock", "📋", "Stockkarte"], ["pflege", "🧪", "Pflege"], ["ernte", "🍯", "Ernte"], ["lager", "📦", "Lager"], ["fin", "💶", "Finanzen"], ["imkerei", "⚙️", "Imkerei"]];
+function renderTabs() { $("#tabs").innerHTML = TABS.map(([k, i, l]) => `<button class="${ui.tab === k ? "on" : ""}" onclick="go('${k}')"><b>${i}</b>${l}</button>`).join(""); }
+function go(tab, sub) { ui.tab = tab; if (sub) ui.sub[tab] = sub; saveUi(); window.scrollTo(0, 0); refresh(); }
+function setSub(tab, sub) { ui.sub[tab] = sub; saveUi(); refresh(); }
+function setF(k, v) { ui.f[k] = v; saveUi(); refresh(); }
+const F = (k, d) => ui.f[k] ?? d;
+const seg = (tab, opts) => { const cur = ui.sub[tab] || opts[0][0]; return `<div class="seg">${opts.map(([k, l]) => `<button class="${cur === k ? "on" : ""}" onclick="setSub('${tab}','${k}')">${l}</button>`).join("")}</div>`; };
+const chipsF = (key, opts, cur) => `<div class="chips">${opts.map(([v, l]) => `<button class="chip${String(cur) === String(v) ? " on" : ""}" onclick='setF(${JSON.stringify(key)},${JSON.stringify(v)})'>${esc(l)}</button>`).join("")}</div>`;
+const yearChips = (key, ys, withAll = true) => chipsF(key, [...ys.map(y => [y, String(y)]), ...(withAll ? [["alle", "Alle"]] : [])], F(key, thisYear()));
+const yFilter = (key, s) => { const y = F(key, thisYear()); return y === "alle" || yearOf(s) === +y; };
+
+let searchTimer;
+function setSearch(k, el) { ui.f[k] = el.value; saveUi(); clearTimeout(searchTimer); searchTimer = setTimeout(() => { const pos = el.selectionStart; refresh(); const n = document.getElementById(el.id); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 250); }
+
+function refresh() {
+  renderTabs();
+  const v = VIEWS[ui.tab] || VIEWS.start;
+  $("#main").innerHTML = v();
+  const fab = FABS[ui.tab]?.();
+  const fb = $("#fab");
+  if (fab) { fb.hidden = false; fb.textContent = fab[0]; fb.onclick = fab[1]; } else fb.hidden = true;
+  updHeader();
+  [...sheets].forEach(s => s.rerender && s.rerender());
+}
+function updHeader() {
+  const d = new Date();
+  $("#hsub").textContent = d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }) + " · v" + APP_VERSION;
+  const b = $("#syncBtn");
+  const st = syncState();
+  b.textContent = st.icon + " " + st.short;
+}
+
+/* ------------------------------ Sheets ------------------------------ */
+const sheets = [];
+function openSheet(title, body, foot, opts = {}) {
+  const ov = document.createElement("div"); ov.className = "ov";
+  ov.innerHTML = `<div class="sh"><div class="shh"><h3>${esc(title)}</h3><button class="x" aria-label="Schließen">✕</button></div><div class="shb">${body}</div>${foot ? `<div class="shf">${foot}</div>` : ""}</div>`;
+  $("#sheets").appendChild(ov);
+  const s = { el: ov, body: ov.querySelector(".shb"), close() { ov.remove(); const i = sheets.indexOf(s); if (i >= 0) sheets.splice(i, 1); }, rerender: null };
+  ov.querySelector(".x").onclick = () => s.close();
+  if (opts.tapOut) ov.addEventListener("click", e => { if (e.target === ov) s.close(); });
+  ov.addEventListener("click", chipHandler);
+  sheets.push(s);
+  return s;
+}
+function chipHandler(e) {
+  const c = e.target.closest("[data-chips] .chip"); if (!c) return;
+  const box = c.closest("[data-chips]"); const inp = box.parentElement.querySelector(`input[name="${box.dataset.chips}"]`);
+  const was = c.classList.contains("on");
+  box.querySelectorAll(".chip").forEach(x => x.classList.remove("on"));
+  if (!was || box.hasAttribute("data-req-box")) { c.classList.add("on"); inp.value = c.dataset.v; } else inp.value = "";
+  inp.dispatchEvent(new Event("change", { bubbles: true }));
+}
+function armDelete(btn, fn) {
+  if (btn.classList.contains("armed")) { fn(); return; }
+  btn.classList.add("armed"); const t = btn.textContent; btn.textContent = "Wirklich löschen?";
+  setTimeout(() => { btn.classList.remove("armed"); btn.textContent = t; }, 3000);
+}
+
+/* Generischer Formular-Baukasten */
+function fld(f, d) {
+  if (f.t === "row") return `<div class="${f.fs.length === 3 ? "g3" : "g2"}">${f.fs.map(x => fld(x, d)).join("")}</div>`;
+  if (f.t === "html") return typeof f.h === "function" ? f.h(d) : f.h;
+  if (f.t === "h") return `<h4>${esc(f.l)}</h4>`;
+  const v = d[f.k] ?? f.def ?? "";
+  const lab = `<span>${esc(f.l)}${f.req ? " *" : ""}</span>`;
+  const opts = (f.o || []).map(o => Array.isArray(o) ? o : [o, o]);
+  if (f.t === "chips") return `<div class="f"><span class="fl">${esc(f.l)}${f.req ? " *" : ""}</span><div class="chips wrap" data-chips="${f.k}" ${f.req ? "data-req-box" : ""}>${opts.map(([val, txt]) => `<button type="button" class="chip${String(v) === String(val) && v !== "" ? " on" : ""}" data-v="${esc(val)}">${esc(txt)}</button>`).join("")}</div><input type="hidden" name="${f.k}" value="${esc(v)}" ${f.num ? "data-num" : ""} ${f.req ? "data-req" : ""}></div>`;
+  if (f.t === "select") return `<label class="f">${lab}<select name="${f.k}" ${f.req ? "data-req" : ""}>${f.empty !== false ? `<option value="">${esc(f.ph || "– bitte wählen –")}</option>` : ""}${(f.groups || [[null, opts]]).map(([g, os]) => (g ? `<optgroup label="${esc(g)}">` : "") + os.map(([val, txt]) => `<option value="${esc(val)}" ${String(v) === String(val) ? "selected" : ""}>${esc(txt)}</option>`).join("") + (g ? "</optgroup>" : "")).join("")}</select></label>`;
+  if (f.t === "area") return `<label class="f">${lab}<textarea name="${f.k}" placeholder="${esc(f.ph || "")}">${esc(v)}</textarea></label>`;
+  if (f.t === "check") return `<label class="ck"><input type="checkbox" name="${f.k}" ${v ? "checked" : ""}> ${esc(f.l)}</label>`;
+  const isNum = f.t === "num";
+  const list = f.list ? `<datalist id="dl-${f.k}">${f.list.map(x => `<option value="${esc(x)}">`).join("")}</datalist>` : "";
+  return `<label class="f">${lab}<input name="${f.k}" type="${isNum ? "text" : (f.t || "text")}" ${isNum ? `inputmode="decimal" data-num` : ""} value="${esc(isNum && v !== "" && v != null ? String(v).replace(".", ",") : v)}" placeholder="${esc(f.ph || "")}" ${f.req ? "data-req" : ""} ${f.list ? `list="dl-${f.k}"` : ""} autocomplete="off">${list}</label>`;
+}
+function collect(root) {
+  const o = {};
+  root.querySelectorAll("[name]").forEach(el => {
+    const k = el.name;
+    if (el.type === "checkbox" && el.dataset.multi != null) { o[k] = o[k] || []; if (el.checked) o[k].push(el.value); }
+    else if (el.type === "checkbox") o[k] = el.checked;
+    else if (el.dataset.num != null) o[k] = num(el.value);
+    else o[k] = el.value.trim();
+  });
+  return o;
+}
+function validate(root) {
+  let ok = true;
+  root.querySelectorAll("[data-req]").forEach(el => {
+    const bad = !String(el.value).trim();
+    const vis = el.type === "hidden" ? el.previousElementSibling : el;
+    vis.classList.toggle("bad", bad);
+    if (bad && ok) { ok = false; vis.scrollIntoView({ block: "center", behavior: "smooth" }); }
+  });
+  if (!ok) toast("Bitte Pflichtfelder (*) ausfüllen");
+  return ok;
+}
+/* openForm: {title, fields, data, onSave(o, s) → true schließt, onDelete, saveLabel, extra:[{label, fn(o,s)}], init(s)} */
+function openForm(cfg) {
+  const d = cfg.data || {};
+  const body = `<form onsubmit="return false">${cfg.fields.map(f => fld(f, d)).join("")}</form>`;
+  const foot = `${cfg.onDelete ? `<button class="btn btnd" data-a="del" style="flex:0 0 auto">Löschen</button>` : ""}${(cfg.extra || []).map((x, i) => `<button class="btn btn2" data-x="${i}">${esc(x.label)}</button>`).join("")}<button class="btn" data-a="save">${esc(cfg.saveLabel || "Speichern")}</button>`;
+  const s = openSheet(cfg.title, body, foot);
+  const form = s.body.querySelector("form");
+  const run = fn => { if (!validate(form)) return; const o = collect(form); const r = fn(o, s); if (r !== false) s.close(); };
+  s.el.querySelector('[data-a="save"]').onclick = () => run(cfg.onSave);
+  (cfg.extra || []).forEach((x, i) => s.el.querySelector(`[data-x="${i}"]`).onclick = () => { if (!validate(form)) return; x.fn(collect(form), s); });
+  const db = s.el.querySelector('[data-a="del"]'); if (db) db.onclick = () => armDelete(db, () => { cfg.onDelete(); s.close(); toast("Gelöscht"); });
+  form.addEventListener("input", e => e.target.classList.remove("bad"));
+  cfg.init && cfg.init(s, form);
+  return s;
+}
+const volkOpts = (nurAktiv = true, incl) => standorte().map(st => [st.name, voelker(false).filter(v => v.standortId === st.id && (!nurAktiv || aktiv(v) || v.id === incl)).map(v => [v.id, vLabel(v)])]).filter(g => g[1].length).concat([["Ohne Standort", voelker(false).filter(v => !get("standorte", v.standortId) && (!nurAktiv || aktiv(v) || v.id === incl)).map(v => [v.id, vLabel(v)])]]).filter(g => g[1].length);
+const artOpts = kat => all("artikel").filter(a => !kat || kat.includes(a.kategorie)).sort(byStr("name")).map(a => [a.id, a.name + " (" + a.einheit + ")"]);
+
+/* Völker-Auswahl (Checkboxen je Standort) */
+function volkPicker(sel = []) {
+  const set = new Set(sel);
+  const groups = standorte().map(st => [st, voelker().filter(v => v.standortId === st.id)]).filter(g => g[1].length);
+  const ohne = voelker().filter(v => !get("standorte", v.standortId));
+  if (ohne.length) groups.push([{ id: "_", name: "Ohne Standort" }, ohne]);
+  const extra = sel.filter(id => !voelker().some(v => v.id === id) && vById(id));
+  if (extra.length) groups.push([{ id: "_x", name: "Nicht mehr aktiv" }, extra.map(vById)]);
+  if (!groups.length) return `<div class="hint">Noch keine Völker angelegt.</div>`;
+  return `<div class="f vp"><span class="fl">Völker *</span><div class="btns" style="margin-top:0"><button type="button" class="mini" onclick="vpAll(this,true)">Alle</button><button type="button" class="mini" onclick="vpAll(this,false)">Keine</button><span class="sm vpc" style="align-self:center"></span></div>
+  ${groups.map(([st, vs]) => `<div class="card" style="padding:6px 12px;background:var(--bg);box-shadow:none;border:1px solid var(--ln)"><div class="vk" style="font-weight:700"><span style="flex:1">📍 ${esc(st.name)}</span><button type="button" class="mini" onclick="vpSt(this)">alle hier</button></div>${vs.map(v => `<label class="vk"><input type="checkbox" name="vk" data-multi value="${v.id}" ${set.has(v.id) ? "checked" : ""} onchange="vpCount(this)"><span style="flex:1">${qDot(koenigin(v.id)?.jahr)} ${esc(vLabel(v))}</span></label>`).join("")}</div>`).join("")}</div>`;
+}
+function vpCount(el) { const vp = el && el.closest && el.closest(".vp"); if (!vp) return; const n = vp.querySelectorAll("input[name=vk]:checked").length; vp.querySelector(".vpc").textContent = n + " gewählt"; }
+function vpAll(btn, on) { const vp = btn.closest(".vp"); vp.querySelectorAll("input[name=vk]").forEach(c => c.checked = on); vpCount(btn); }
+function vpSt(btn) { const card = btn.closest(".card"); const cs = [...card.querySelectorAll("input[name=vk]")]; const on = !cs.every(c => c.checked); cs.forEach(c => c.checked = on); vpCount(btn); }
+
+/* ============================== Ansichten ============================== */
+const VIEWS = {}, FABS = {};
+
+/* ------------------------------ Start ------------------------------ */
+function aufgaben() {
+  const t = [], heute = today(), m = new Date().getMonth() + 1;
+  all("finanzen").filter(offen).sort(byStr("datum")).forEach(f => t.push(["💶", `<b>Betrag fehlt:</b> ${esc(f.text || f.kategorie || "Buchung")} <span class="sm">(${fmtD(f.datum)})</span>`, `openFin('${f.id}')`]));
+  all("behandlungen").forEach(b => {
+    const mi = get("mittel", b.mittelId); const ende = b.bis || b.datum;
+    if (b.bis && b.bis >= heute) t.push(["🧪", `<b>Behandlung läuft</b> bis ${fmtD(b.bis)}: ${esc(mi?.name || b.mittel || "")} <span class="sm">· ${esc(b.umfang || "")}</span>`, `openBeh('${b.id}')`]);
+    const wz = +(mi?.wzHonig ?? b.wzHonig ?? 0);
+    if (wz > 0 && addDays(ende, wz) >= heute) t.push(["⏳", `<b>Wartezeit Honig</b> bis ${fmtD(addDays(ende, wz))}: ${esc(mi?.name || "")} <span class="sm">· ${esc(b.umfang || "")}</span>`, `openBeh('${b.id}')`]);
+  });
+  all("artikel").filter(a => all("lagerbew").some(x => x.artikelId === a.id)).forEach(a => { const b = bestand(a.id); if (a.mindest != null && a.mindest !== "" && b < +a.mindest) t.push(["📦", `<b>Nachkaufen:</b> ${esc(a.name)} – noch ${fN(b)} ${esc(a.einheit)} (min. ${fN(+a.mindest)})`, `openArtikel('${a.id}')`]); });
+  const grenze = +(meta().varroaGrenze || 10);
+  voelker().forEach(v => {
+    const ds = lastDS(v.id);
+    if (ds && ds.varroa != null && ds.varroa >= grenze && daysBetween(ds.datum, heute) <= 30) t.push(["🦠", `<b>Varroa hoch:</b> ${esc(vLabel(v))} – ${fN(ds.varroa)} Milben/Tag (${fmtD(ds.datum)})`, `openVolk('${v.id}')`]);
+    if (ds && /weisellos/.test(ds.koenigin || "") && !all("koeniginnen").some(k => k.volkId === v.id && (k.eingesetzt || "") > ds.datum)) t.push(["👑", `<b>Weisellos?</b> ${esc(vLabel(v))} (Durchsicht ${fmtD(ds.datum)})`, `openVolk('${v.id}')`]);
+    if (ds && /Schwarmzellen/.test(ds.schwarm || "") && daysBetween(ds.datum, heute) <= 10) t.push(["🐝", `<b>Schwarmstimmung:</b> ${esc(vLabel(v))} (${fmtD(ds.datum)})`, `openVolk('${v.id}')`]);
+  });
+  if (m >= 4 && m <= 8) {
+    const alt = voelker().filter(v => { const ds = lastDS(v.id); return !ds || daysBetween(ds.datum, heute) > 14; });
+    if (alt.length) t.push(["📋", `<b>Durchsicht fällig</b> (> 14 Tage): ${alt.slice(0, 6).map(v => esc("Nr. " + v.nr)).join(", ")}${alt.length > 6 ? " …" : ""}`, `go('stock')`]);
+  }
+  const unv = voelker().filter(v => pflichtFehlt(v).length);
+  if (unv.length) t.push(["⚠️", `<b>Stammdaten unvollständig:</b> ${unv.length} Volk/Völker`, `setF('vFilt','unv');go('voelker','liste')`]);
+  const altQ = voelker().filter(v => { const k = koenigin(v.id); return k && k.jahr && thisYear() - k.jahr >= 3; });
+  if (altQ.length) t.push(["👑", `<b>Königin ≥ 3 Jahre:</b> ${altQ.map(v => "Nr. " + esc(v.nr)).join(", ")}`, `go('voelker','koenig')`]);
+  return t;
+}
+VIEWS.start = () => {
+  const h = new Date().getHours(), name = (meta().imker || "").split(" ")[0];
+  const gruss = (h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend") + (name ? ", " + esc(name) : "");
+  const j = thisYear(), vs = voelker();
+  const honig = sum(all("ernte").filter(e => yearOf(e.datum) === j), e => sum(e.posten || [], p => p.kg));
+  const fin = all("finanzen").filter(f => yearOf(f.datum) === j && imErgebnis(f) && !offen(f));
+  const erg = sum(fin, f => (f.art === "ein" ? 1 : -1) * f.betrag);
+  const lastBeh = all("behandlungen").sort(byStr("datum")).reverse()[0];
+  const tasks = aufgaben();
+  const stHonig = standorte().map(s => [s, sum(all("ernte").filter(e => yearOf(e.datum) === j && e.standortId === s.id), e => sum(e.posten || [], p => p.kg)), vs.filter(v => v.standortId === s.id).length]);
+  const mx = Math.max(1, ...stHonig.map(x => x[1]));
+  return `<h2>${gruss} 👋</h2>
+  <div class="tiles">
+    <div class="tile" onclick="go('voelker','liste')"><div class="v">${vs.length}</div><div class="l">Völker an ${standorte().filter(s => vs.some(v => v.standortId === s.id)).length} Standorten</div></div>
+    <div class="tile" onclick="go('ernte','liste')"><div class="v">${kg(honig)}</div><div class="l">Honig ${j}${vs.length ? " · Ø " + kg(honig / vs.length) : ""}</div></div>
+    <div class="tile" onclick="go('pflege','beh')"><div class="v" style="font-size:19px">${lastBeh ? fmtD(lastBeh.datum) : "–"}</div><div class="l">Letzte Behandlung${lastBeh ? ": " + esc((get("mittel", lastBeh.mittelId)?.wirkstoff) || "") : ""}</div></div>
+    <div class="tile" onclick="go('fin','buch')"><div class="v" style="color:${erg < 0 ? "var(--red)" : "var(--ok)"}">${eur(erg)}</div><div class="l">Ergebnis ${j}</div></div>
+  </div>
+  <h2>Offene Aufgaben ${tasks.length ? `<span class="badge b-warn">${tasks.length}</span>` : ""}</h2>
+  <div class="card">${tasks.length ? tasks.map(([i, t, a]) => `<div class="task" onclick="${a}"><span class="ic">${i}</span><div>${t}</div></div>`).join("") : `<div class="empty">✅ Alles erledigt</div>`}</div>
+  <h2>Schnell erfassen</h2>
+  <div class="qa">
+    <button onclick="formDurchsicht()"><b>📋</b>Durchsicht</button>
+    <button onclick="formBeh()"><b>🧪</b>Behandlung</button>
+    <button onclick="formFutter()"><b>🥄</b>Fütterung</button>
+    <button onclick="formErnte()"><b>🍯</b>Ernte</button>
+    <button onclick="formFin()"><b>💶</b>Buchung</button>
+    <button onclick="formBew()"><b>📦</b>Lager</button>
+  </div>
+  <h2>Standorte ${j}</h2>
+  <div class="card">${stHonig.map(([s, k, n]) => `<div class="row" onclick="setF('vSt','${s.id}');go('voelker','liste')"><div class="grow"><div class="t1">📍 ${esc(s.name)}</div><div class="sm">${n} Völker · ${kg(k)} Honig${n ? " · Ø " + kg(k / n) : ""}</div><div class="hb"><i style="width:${k / mx * 100}%"></i></div></div></div>`).join("") || `<div class="empty">Keine Standorte</div>`}</div>
+  ${honigChart()}
+  <p class="sm" style="text-align:center;margin-top:20px">Bienenbuch v${APP_VERSION} · ${esc(syncState().long)}</p>`;
+};
+function honigChart() {
+  const ys = years("ernte").filter(y => y <= thisYear()).slice(0, 6).reverse();
+  if (!all("ernte").length) return "";
+  const data = ys.map(y => [y, sum(all("ernte").filter(e => yearOf(e.datum) === y), e => sum(e.posten || [], p => p.kg))]);
+  const mx = Math.max(1, ...data.map(d => d[1]));
+  return `<h2>Honig je Jahr</h2><div class="card"><div class="bars">${data.map(([y, v]) => `<div class="bc"><div class="bv">${v ? fN(v, 0) : ""}</div><div class="bar" style="height:${v / mx * 100}%"></div><div class="bl">${y}</div></div>`).join("")}</div></div>`;
+}
+
+/* ------------------------------ Völker ------------------------------ */
+VIEWS.voelker = () => {
+  const sub = ui.sub.voelker || "liste";
+  let h = seg("voelker", [["liste", "Völker"], ["koenig", "Königinnen"], ["stand", "Standorte"]]);
+  if (sub === "koenig") return h + viewKoenig();
+  if (sub === "stand") return h + viewStandorte();
+  const q = (F("vQ", "") || "").toLowerCase(), st = F("vSt", "alle"), fl = F("vFilt", "aktiv");
+  let list = voelker(false).filter(v => fl === "abg" ? !aktiv(v) : aktiv(v));
+  if (fl === "unv") list = list.filter(v => pflichtFehlt(v).length);
+  if (st !== "alle") list = list.filter(v => v.standortId === st);
+  if (q) list = list.filter(v => [v.nr, v.name, v.beute, v.notiz, stName(v.standortId)].join(" ").toLowerCase().includes(q));
+  h += `<input class="search" id="vQ" type="search" placeholder="🔍 Nummer, Name, Notiz …" value="${esc(F("vQ", ""))}" oninput="setSearch('vQ',this)">`;
+  h += chipsF("vSt", [["alle", "Alle Standorte"], ...standorte().map(s => [s.id, s.name])], st);
+  h += chipsF("vFilt", [["aktiv", "Aktiv"], ["unv", "⚠ Unvollständig"], ["abg", "Aufgelöst"]], fl);
+  const j = thisYear();
+  const grp = st === "alle" ? standorte().map(s => [s.name, list.filter(v => v.standortId === s.id)]).concat([["Ohne Standort", list.filter(v => !get("standorte", v.standortId))]]) : [[stName(st), list]];
+  h += grp.filter(g => g[1].length).map(([n, vs]) => `<h2>📍 ${esc(n)} <span class="sm">(${vs.length})</span></h2><div class="card">${vs.map(v => {
+    const k = koenigin(v.id), ds = lastDS(v.id), fehlt = pflichtFehlt(v), hk = honigVolk(v.id, j);
+    return `<div class="row" onclick="openVolk('${v.id}')"><div style="font-family:var(--slab);font-weight:700;font-size:20px;min-width:38px;text-align:center">${esc(v.nr)}</div><div class="grow"><div class="t1 ell">${v.name ? "„" + esc(v.name) + "“ " : ""}${k ? qDot(k.jahr) + " " + k.jahr : '<span class="sm">keine Königin</span>'} <span class="sm">· ${esc(v.beute || "")}</span></div><div class="sm ell">${ds ? "Durchsicht " + fmtD(ds.datum) + (ds.sanftmut ? " · Sanftmut " + ds.sanftmut : "") : "noch keine Durchsicht"}${hk ? " · 🍯 " + kg(hk) : ""}</div></div>${fehlt.length ? '<span class="badge b-warn">⚠</span>' : ""}${!aktiv(v) ? `<span class="badge b-red">${esc(v.status)}</span>` : ""}</div>`;
+  }).join("")}</div>`).join("") || `<div class="empty">Keine Völker gefunden.${!all("voelker").length ? "<br>Lege mit „+ Volk“ dein erstes Volk an." : ""}</div>`;
+  return h;
+};
+FABS.voelker = () => { const s = ui.sub.voelker || "liste"; return s === "koenig" ? ["+ Königin", () => formKoenigin()] : s === "stand" ? ["+ Standort", () => formStandort()] : ["+ Volk", () => formVolk()]; };
+
+function formVolk(id, preset = {}) {
+  const v = id ? get("voelker", id) : { nr: nextVolkNr(), entstanden: today(), status: "aktiv", standortId: F("vSt", "alle") !== "alle" ? F("vSt") : "", ...preset };
+  const fields = [
+    { t: "row", fs: [{ k: "nr", l: "Volk-Nr.", req: true }, { k: "name", l: "Name (optional)" }] },
+    { k: "standortId", l: "Standort", t: "select", req: true, o: standorte().map(s => [s.id, s.name]) },
+    { t: "row", fs: [{ k: "beute", l: "Beute / Rähmchenmaß", t: "select", req: true, o: ["Zander", "Deutsch Normalmaß", "Dadant", "Langstroth", "Segeberger", "Mini-Plus", "Einraumbeute", "Sonstige"] }, { k: "zargen", l: "Zargen (Brutraum)", t: "num" }] },
+    { t: "row", fs: [{ k: "herkunft", l: "Herkunft", t: "select", req: true, o: ["Ableger", "Schwarm", "Kunstschwarm", "Kauf", "Sonstige"] }, { k: "entstanden", l: "Seit / gebildet am", t: "date" }] },
+    { k: "muttervolkId", l: "Muttervolk (bei Ableger/Schwarm)", t: "select", groups: volkOpts(false).map(([g, os]) => [g, os.filter(o => o[0] !== id)]), ph: "– keins –" },
+    { k: "auff", l: "Eigenschaften / Auffälligkeiten", ph: "z. B. sehr sanft, schwarmträge" },
+    { k: "notiz", l: "Notiz", t: "area" },
+    { t: "h", l: "Status" },
+    { k: "status", l: "Status", t: "chips", req: true, o: [["aktiv", "aktiv"], ["aufgelöst", "aufgelöst / eingegangen"]] },
+    { t: "row", fs: [{ k: "abgang", l: "Abgang am", t: "date" }, { k: "abgangGrund", l: "Grund", t: "select", o: ["Winterverlust", "Vereinigt", "Verkauft", "Weisellos", "Räuberei", "Sonstige"] }] }
+  ];
+  openForm({ title: id ? vLabel(v) + " bearbeiten" : "Neues Volk", fields, data: v,
+    onSave: o => {
+      if (voelker(false).some(x => x.nr === o.nr && x.id !== id && aktiv(x))) { toast("Nummer " + o.nr + " ist schon vergeben"); return false; }
+      if (o.status === "aktiv") { o.abgang = ""; o.abgangGrund = ""; } else if (!o.abgang) o.abgang = today();
+      const nid = put("voelker", { ...v, ...o }); toast("Gespeichert");
+      if (!id && !preset.noQueenPrompt) setTimeout(() => openVolk(nid), 50);
+    },
+    onDelete: id ? () => { del("voelker", id); sheets.filter(s => s.volkId === id).forEach(s => s.close()); } : null });
+}
+function openVolk(id) {
+  const s = openSheet("Volk", "", `<button class="btn btn2" onclick="formVolk('${id}')">Bearbeiten</button><button class="btn" onclick="formDurchsicht(null,'${id}')">+ Durchsicht</button>`, { tapOut: true });
+  s.volkId = id;
+  s.rerender = () => {
+    const v = vById(id); if (!v) return s.close();
+    s.el.querySelector("h3").textContent = vLabel(v);
+    const k = koenigin(v.id), dss = durchsichtenV(id), fehlt = pflichtFehlt(v);
+    const behs = all("behandlungen").filter(b => (b.voelkerIds || []).includes(id)).sort(byStr("datum")).reverse();
+    const fut = all("fuetterung").filter(b => (b.voelkerIds || []).includes(id)).sort(byStr("datum")).reverse();
+    const ys = years("ernte").filter(y => honigVolk(id, y) > 0);
+    const kinder = all("voelker").filter(x => x.muttervolkId === id);
+    const qs = all("koeniginnen").filter(q => q.volkId === id).sort(byStr("jahr")).reverse();
+    s.body.innerHTML = `
+    ${fehlt.length ? `<div class="hint">⚠ Es fehlt: ${fehlt.join(", ")}</div>` : ""}
+    <div class="card" style="background:var(--bg);box-shadow:none"><div class="kv">
+      <div>Standort</div><div>📍 ${esc(stName(v.standortId))}</div>
+      <div>Beute</div><div>${esc(v.beute || "–")}${v.zargen ? " · " + fN(v.zargen) + " Zarge(n)" : ""}</div>
+      <div>Herkunft</div><div>${esc(v.herkunft || "–")}${v.entstanden ? " · seit " + fmtD(v.entstanden) : ""}</div>
+      ${v.muttervolkId ? `<div>Muttervolk</div><div><a href="#" onclick="openVolk('${v.muttervolkId}');return false">${esc(vName(v.muttervolkId))}</a></div>` : ""}
+      ${kinder.length ? `<div>Ableger</div><div>${kinder.map(x => `<a href="#" onclick="openVolk('${x.id}');return false">${esc(vLabel(x))}</a>`).join(", ")}</div>` : ""}
+      ${v.auff ? `<div>Eigenschaften</div><div>${esc(v.auff)}</div>` : ""}
+      ${v.notiz ? `<div>Notiz</div><div>${esc(v.notiz)}</div>` : ""}
+      ${!aktiv(v) ? `<div>Status</div><div><span class="badge b-red">${esc(v.status)}</span> ${fmtD(v.abgang)} ${esc(v.abgangGrund || "")}</div>` : ""}
+    </div></div>
+    <h4>👑 Königin</h4>
+    <div class="card">${qs.map(q => `<div class="row" onclick="formKoenigin('${q.id}')">${qDot(q.jahr)}<div class="grow"><div class="t1">Jahrgang ${esc(q.jahr || "?")} ${q.rasse ? "· " + esc(q.rasse) : ""}</div><div class="sm">${esc(q.herkunft || "")}${q.zuechter ? " · " + esc(q.zuechter) : ""}${q.eingesetzt ? " · seit " + fmtD(q.eingesetzt) : ""}${q.gezeichnet ? " · gezeichnet" : ""}</div></div>${q.status && q.status !== "aktiv" ? `<span class="badge">${esc(q.status)}</span>` : '<span class="badge b-ok">aktiv</span>'}</div>`).join("") || `<div class="empty">Keine Königin erfasst</div>`}
+      <div class="btns"><button class="mini" onclick="formKoenigin(null,'${id}')">+ Königin</button>${aktiv(v) ? `<button class="mini" onclick="formVolk(null,{herkunft:'Ableger',muttervolkId:'${id}',standortId:'${v.standortId || ""}'})">+ Ableger bilden</button>` : ""}</div></div>
+    <h4>🍯 Honig</h4>
+    <div class="card">${ys.length ? `<table class="t">${ys.map(y => `<tr><td>${y}</td><td class="r"><b>${kg(honigVolk(id, y))}</b></td></tr>`).join("")}</table>` : `<div class="empty">Noch keine Ernte</div>`}</div>
+    <h4>📋 Durchsichten (${dss.length})</h4>
+    <div class="card">${dss.slice(0, 12).map(d => `<div class="row" onclick="formDurchsicht('${d.id}')"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(d.datum)}<div class="sm">${yearOf(d.datum)}</div></div><div class="grow sm">${dsSummary(d)}</div></div>`).join("") || `<div class="empty">Noch keine Durchsicht</div>`}${dss.length > 12 ? `<div class="sm" style="padding-top:6px">… ${dss.length - 12} ältere in der Stockkarte</div>` : ""}</div>
+    <h4>🧪 Behandlungen</h4>
+    <div class="card">${behs.slice(0, 10).map(b => `<div class="row" onclick="openBeh('${b.id}')"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(b.datum)}<div class="sm">${yearOf(b.datum)}</div></div><div class="grow"><div>${esc(get("mittel", b.mittelId)?.name || b.mittel || "")}</div><div class="sm">${esc(b.dosis || "")} ${esc(b.methode || "")}</div></div></div>`).join("") || `<div class="empty">Keine</div>`}</div>
+    <h4>🥄 Fütterung</h4>
+    <div class="card">${fut.slice(0, 10).map(b => `<div class="row" onclick="formFutter('${b.id}')"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(b.datum)}<div class="sm">${yearOf(b.datum)}</div></div><div class="grow">${esc(b.art || "")} · ${kg(b.menge)}</div></div>`).join("") || `<div class="empty">Keine</div>`}</div>`;
+  };
+  s.rerender();
+}
+
+const SANFT = { 1: "sehr sanft", 2: "sanft", 3: "nervös", 4: "stechlustig" };
+function dsSummary(d) {
+  const p = [];
+  if (d.koenigin) p.push((d.koenigin === "gesehen" ? "👑 ✓" : d.koenigin === "Stifte" ? "👑 Stifte" : "👑 " + d.koenigin));
+  if (d.brut != null) p.push("Brut " + fN(d.brut));
+  if (d.waben != null) p.push("Waben " + fN(d.waben));
+  if (d.sanftmut) p.push("Sanftmut " + d.sanftmut);
+  if (d.schwarm && d.schwarm !== "keine") p.push("⚠ " + d.schwarm);
+  if (d.futter) p.push("Futter " + d.futter);
+  if (d.varroa != null) p.push("Varroa " + fN(d.varroa) + "/Tag");
+  if (d.massnahmen) p.push("➜ " + d.massnahmen);
+  if (d.notiz) p.push("📝 " + d.notiz);
+  return esc(p.join(" · ")) || "–";
+}
+
+/* Königinnen */
+function viewKoenig() {
+  const fl = F("qFilt", "aktiv");
+  let qs = all("koeniginnen").filter(q => fl === "alle" || (fl === "aktiv" ? (!q.status || q.status === "aktiv") && aktiv(vById(q.volkId) || {}) : q.status && q.status !== "aktiv"));
+  qs.sort((a, b) => (+b.jahr || 0) - (+a.jahr || 0) || byStr("volkId")(a, b));
+  const ohne = voelker().filter(v => !koenigin(v.id));
+  return chipsF("qFilt", [["aktiv", "Aktuell"], ["alt", "Ersetzt / verloren"], ["alle", "Alle"]], fl) +
+    `<div class="hint">Farbe nach Jahrgang (Endziffer): 1/6 ${qDot(2021)} weiß · 2/7 ${qDot(2022)} gelb · 3/8 ${qDot(2023)} rot · 4/9 ${qDot(2024)} grün · 5/0 ${qDot(2025)} blau</div>` +
+    (fl === "aktiv" && ohne.length ? `<div class="card"><div class="sm" style="margin-bottom:4px">Ohne Königin erfasst:</div>${ohne.map(v => `<button class="mini" style="margin:2px" onclick="formKoenigin(null,'${v.id}')">${esc("Nr. " + v.nr)} +</button>`).join("")}</div>` : "") +
+    `<div class="card">${qs.map(q => `<div class="row" onclick="formKoenigin('${q.id}')">${qDot(q.jahr)}<div class="grow"><div class="t1">${esc(vName(q.volkId))} <span class="sm">· ${esc(stName(vById(q.volkId)?.standortId))}</span></div><div class="sm">Jahrgang ${esc(q.jahr || "?")} (${q.jahr ? thisYear() - q.jahr + " J." : ""})${q.rasse ? " · " + esc(q.rasse) : ""}${q.herkunft ? " · " + esc(q.herkunft) : ""}${q.begattung ? " · " + esc(q.begattung) : ""}</div></div>${q.status && q.status !== "aktiv" ? `<span class="badge">${esc(q.status)}</span>` : ""}</div>`).join("") || `<div class="empty">Keine Königinnen</div>`}</div>`;
+}
+function formKoenigin(id, volkId) {
+  const q = id ? get("koeniginnen", id) : { volkId: volkId || "", jahr: thisYear(), eingesetzt: today(), status: "aktiv", gezeichnet: true };
+  openForm({ title: id ? "Königin bearbeiten" : "Neue Königin", data: q, fields: [
+    { k: "volkId", l: "Volk", t: "select", req: true, groups: volkOpts(true, q.volkId) },
+    { t: "row", fs: [{ k: "jahr", l: "Jahrgang (Schlupf)", t: "num", req: true }, { k: "eingesetzt", l: "Im Volk seit", t: "date" }] },
+    { k: "gezeichnet", l: "Gezeichnet (Farbe nach Jahrgang)", t: "check" },
+    { k: "rasse", l: "Rasse / Linie", list: ["Carnica", "Buckfast", "Dunkle Biene (Mellifera)", "Ligustica"] },
+    { k: "herkunft", l: "Herkunft", t: "select", o: ["Eigene Nachzucht", "Stille Umweiselung", "Nachschaffung", "Schwarm", "Gekauft", "Sonstige"] },
+    { t: "row", fs: [{ k: "begattung", l: "Begattung", t: "select", o: ["Standbegattung", "Belegstelle", "Besamung", "unbekannt"] }, { k: "zuechter", l: "Züchter / Bezug" }] },
+    { k: "status", l: "Status", t: "chips", req: true, o: ["aktiv", "ersetzt", "verloren"] },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => {
+    o.jahr = o.jahr ? Math.round(o.jahr) : null;
+    if (o.status === "aktiv") all("koeniginnen").filter(x => x.volkId === o.volkId && x.id !== id && (!x.status || x.status === "aktiv")).forEach(x => put("koeniginnen", { ...x, status: "ersetzt" }, true));
+    put("koeniginnen", { ...q, ...o }); toast("Gespeichert");
+  }, onDelete: id ? () => del("koeniginnen", id) : null });
+}
+
+/* Standorte */
+function viewStandorte() {
+  return `<div class="card">${standorte().map((s, i, a) => { const vs = voelker().filter(v => v.standortId === s.id); return `<div class="row"><div class="grow" onclick="formStandort('${s.id}')"><div class="t1">📍 ${esc(s.name)}</div><div class="sm">${vs.length} Völker${s.adresse ? " · " + esc(s.adresse) : ""}${s.flur ? " · Flur " + esc(s.flur) : ""}</div></div><button class="mini" ${i ? "" : "disabled"} onclick="moveSt('${s.id}',-1)">▲</button><button class="mini" ${i < a.length - 1 ? "" : "disabled"} onclick="moveSt('${s.id}',1)">▼</button></div>`; }).join("") || `<div class="empty">Keine Standorte</div>`}</div>`;
+}
+function moveSt(id, d) { const a = standorte(); const i = a.findIndex(s => s.id === id); const j = i + d; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; a.forEach((s, k) => { if (s.pos !== k + 1) put("standorte", { ...s, pos: k + 1 }, true); }); saveStore(); refresh(); }
+function formStandort(id) {
+  const s = id ? get("standorte", id) : { pos: standorte().length + 1 };
+  openForm({ title: id ? "Standort bearbeiten" : "Neuer Standort", data: s, fields: [
+    { k: "name", l: "Name", req: true }, { k: "adresse", l: "Lage / Adresse" }, { t: "row", fs: [{ k: "flur", l: "Flurnummer" }, { k: "besitzer", l: "Grundbesitzer" }] },
+    { k: "tracht", l: "Trachtpflanzen", ph: "z. B. Raps, Obst, Linde, Wald" }, { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => { put("standorte", { ...s, ...o }); toast("Gespeichert"); },
+  onDelete: id ? () => { if (all("voelker").some(v => v.standortId === id && aktiv(v))) { toast("Standort hat noch Völker – erst umsetzen"); return; } del("standorte", id); } : null });
+}
+
+/* ------------------------------ Stockkarte ------------------------------ */
+VIEWS.stock = () => {
+  const st = F("dsSt", "alle"), vk = F("dsV", "");
+  let ds = all("durchsichten").filter(d => yFilter("dsY", d.datum));
+  if (st !== "alle") ds = ds.filter(d => vById(d.volkId)?.standortId === st);
+  if (vk) ds = ds.filter(d => d.volkId === vk);
+  ds.sort((a, b) => b.datum.localeCompare(a.datum) || byStr("nr")(vById(a.volkId) || {}, vById(b.volkId) || {}));
+  const byDate = {}; ds.forEach(d => (byDate[d.datum] = byDate[d.datum] || []).push(d));
+  let h = yearChips("dsY", years("durchsichten"));
+  h += chipsF("dsSt", [["alle", "Alle Standorte"], ...standorte().map(s => [s.id, s.name])], st);
+  h += `<label class="f"><select onchange="setF('dsV',this.value)"><option value="">Alle Völker</option>${volkOpts(false).map(([g, os]) => `<optgroup label="${esc(g)}">${os.map(([id, l]) => `<option value="${id}" ${vk === id ? "selected" : ""}>${esc(l)}</option>`).join("")}</optgroup>`).join("")}</select></label>`;
+  h += Object.entries(byDate).map(([d, list]) => `<h2>${new Date(d + "T12:00").toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" })}</h2><div class="card">${list.map(x => { const v = vById(x.volkId); return `<div class="row" onclick="formDurchsicht('${x.id}')"><div style="font-family:var(--slab);font-weight:700;font-size:18px;min-width:34px;text-align:center">${esc(v?.nr ?? "?")}</div><div class="grow"><div class="sm" style="color:var(--tx)">${dsSummary(x)}</div><div class="sm">📍 ${esc(stName(v?.standortId))}</div></div></div>`; }).join("")}</div>`).join("") || `<div class="empty">Keine Durchsichten im gewählten Zeitraum.</div>`;
+  return h;
+};
+FABS.stock = () => ["+ Durchsicht", () => formDurchsicht(null, F("dsV", ""))];
+function formDurchsicht(id, volkId, datum) {
+  const prev = id ? null : (volkId ? lastDS(volkId) : null);
+  const d = id ? get("durchsichten", id) : { volkId: volkId || "", datum: datum || today() };
+  const fields = [
+    { t: "row", fs: [{ k: "volkId", l: "Volk", t: "select", req: true, groups: volkOpts(true, d.volkId) }, { k: "datum", l: "Datum", t: "date", req: true }] },
+    { t: "html", h: `<div class="sm prevds" style="margin:-4px 0 10px">${prev ? "Letzte: " + fmtD(prev.datum) + " – " + dsSummary(prev) : ""}</div>` },
+    { k: "koenigin", l: "Königin", t: "chips", o: [["gesehen", "👑 gesehen"], ["Stifte", "Stifte gesehen"], ["nicht gesehen", "nicht gesehen"], ["weisellos?", "weisellos?"]] },
+    { t: "row", fs: [{ k: "waben", l: "Besetzte Wabengassen", t: "num" }, { k: "brut", l: "Brutwaben", t: "num" }] },
+    { k: "sanftmut", l: "Sanftmut (1 = sehr sanft … 4 = stechlustig)", t: "chips", num: true, o: [[1, "1"], [2, "2"], [3, "3"], [4, "4"]] },
+    { k: "wabensitz", l: "Wabensitz (1 = ruhig … 4 = läuft ab)", t: "chips", num: true, o: [[1, "1"], [2, "2"], [3, "3"], [4, "4"]] },
+    { k: "schwarm", l: "Schwarmtrieb", t: "chips", o: ["keine", "Spielnäpfchen", "Schwarmzellen", "Zellen gebrochen", "geschwärmt"] },
+    { k: "futter", l: "Futter", t: "chips", o: ["knapp", "ausreichend", "reichlich"] },
+    { t: "row", fs: [{ k: "honigraum", l: "Honigräume", t: "num" }, { k: "varroa", l: "Varroa (Milben/Tag)", t: "num" }] },
+    { k: "massnahmen", l: "Maßnahmen", list: ["Honigraum aufgesetzt", "Drohnenrahmen geschnitten", "Mittelwände gegeben", "Schwarmzellen gebrochen", "Ableger gebildet", "Windel eingelegt", "Erweitert", "Eingeengt", "Futter gegeben", "Absperrgitter"] },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ];
+  const save = o => { put("durchsichten", { ...d, ...o }); toast("Durchsicht gespeichert"); };
+  openForm({ title: id ? "Durchsicht bearbeiten" : "Durchsicht", data: d, fields, onSave: save,
+    onDelete: id ? () => del("durchsichten", id) : null,
+    extra: id ? [] : [{ label: "Speichern & nächstes", fn: (o, s) => {
+      save(o); s.close();
+      const v = vById(o.volkId); const vs = voelker().filter(x => x.standortId === v?.standortId);
+      const done = new Set(all("durchsichten").filter(x => x.datum === o.datum).map(x => x.volkId));
+      const i = vs.findIndex(x => x.id === o.volkId);
+      const nxt = vs.slice(i + 1).concat(vs.slice(0, i)).find(x => !done.has(x.id));
+      if (nxt) formDurchsicht(null, nxt.id, o.datum); else toast("✅ Alle Völker am Standort durchgesehen");
+    } }],
+    init: (s, form) => { form.querySelector("[name=volkId]").addEventListener("change", e => { const p = lastDS(e.target.value); form.querySelector(".prevds").textContent = p ? "Letzte: " + fmtD(p.datum) + " – " + dsSummary(p).replace(/&[^;]+;/g, "") : ""; }); }
+  });
+}
+
+/* ------------------------------ Pflege (Behandlung/Fütterung/Mittel) ------------------------------ */
+VIEWS.pflege = () => {
+  const sub = ui.sub.pflege || "beh";
+  let h = seg("pflege", [["beh", "Behandlungen"], ["fut", "Fütterung"], ["mit", "Mittel"]]);
+  if (sub === "mit") return h + `<div class="hint">Arzneimittel-Liste. Wartezeit (Honig) wird bei Behandlungen automatisch berechnet.</div><div class="card">${all("mittel").sort(byStr("name")).map(m => `<div class="row" onclick="formMittel('${m.id}')"><div class="grow"><div class="t1">${esc(m.name)}</div><div class="sm">${esc(m.wirkstoff || "")}${m.dosierung ? " · " + esc(m.dosierung) : ""}</div></div><span class="badge">WZ ${fN(+m.wzHonig || 0)} T.</span></div>`).join("") || `<div class="empty">Keine Mittel</div>`}</div>`;
+  if (sub === "fut") {
+    const fs = all("fuetterung").filter(f => yFilter("fuY", f.datum)).sort(byStr("datum")).reverse();
+    const proV = {}; fs.forEach(f => (f.voelkerIds || []).forEach(id => proV[id] = (proV[id] || 0) + (f.menge || 0)));
+    h += yearChips("fuY", years("fuetterung"));
+    h += `<div class="tiles"><div class="tile"><div class="v">${kg(sum(fs, f => (f.menge || 0) * (f.voelkerIds || []).length))}</div><div class="l">Futter gesamt</div></div><div class="tile"><div class="v">${kg(Object.keys(proV).length ? sum(Object.values(proV), x => x) / Object.keys(proV).length : 0)}</div><div class="l">Ø je Volk</div></div></div>`;
+    h += `<div class="card">${fs.map(f => `<div class="row" onclick="formFutter('${f.id}')"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(f.datum)}<div class="sm">${yearOf(f.datum)}</div></div><div class="grow"><div class="t1">${esc(f.art || "Futter")} · ${kg(f.menge)} je Volk</div><div class="sm">${esc(f.umfang || "")}${f.notiz ? " · " + esc(f.notiz) : ""}</div></div></div>`).join("") || `<div class="empty">Keine Fütterungen</div>`}</div>`;
+    if (Object.keys(proV).length) h += `<h2>Je Volk</h2><div class="card"><table class="t">${Object.entries(proV).sort((a, b) => byStr("nr")(vById(a[0]) || {}, vById(b[0]) || {})).map(([id, m]) => `<tr><td>${esc(vName(id))}</td><td class="sm">${esc(stName(vById(id)?.standortId))}</td><td class="r"><b>${kg(m)}</b></td></tr>`).join("")}</table></div>`;
+    return h;
+  }
+  const bs = all("behandlungen").filter(b => yFilter("bhY", b.datum)).sort(byStr("datum")).reverse();
+  h += yearChips("bhY", years("behandlungen"));
+  const lastBy = {}; all("behandlungen").forEach(b => { const k = b.mittelId || b.mittel; if (!lastBy[k] || lastBy[k].datum < b.datum) lastBy[k] = b; });
+  if (Object.keys(lastBy).length) h += `<h2>Zuletzt je Mittel</h2><div class="card">${Object.values(lastBy).sort(byStr("datum")).reverse().map(b => `<div class="row" onclick="openBeh('${b.id}')"><div class="grow">${esc(get("mittel", b.mittelId)?.name || b.mittel)}</div><b class="nw">${fmtD(b.datum)}</b></div>`).join("")}</div>`;
+  h += `<h2>Behandlungen</h2><div class="card">${bs.map(b => { const lauf = b.bis && b.bis >= today(); return `<div class="row" onclick="openBeh('${b.id}')"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(b.datum)}<div class="sm">${yearOf(b.datum)}</div></div><div class="grow"><div class="t1">${esc(get("mittel", b.mittelId)?.name || b.mittel || "")}</div><div class="sm">${esc(b.umfang || "")}${b.dosis ? " · " + esc(b.dosis) : ""}${b.methode ? " · " + esc(b.methode) : ""}</div></div>${lauf ? `<span class="badge b-blue">bis ${fmtDs(b.bis)}</span>` : ""}</div>`; }).join("") || `<div class="empty">Keine Behandlungen</div>`}</div>
+  <div class="btns"><button class="btn btn2" onclick="csvBestandsbuch()">📄 Bestandsbuch (CSV)</button></div>`;
+  return h;
+};
+FABS.pflege = () => { const s = ui.sub.pflege || "beh"; return s === "fut" ? ["+ Fütterung", () => formFutter()] : s === "mit" ? ["+ Mittel", () => formMittel()] : ["+ Behandlung", () => formBeh()]; };
+
+function formMittel(id) {
+  const m = id ? get("mittel", id) : { wzHonig: 0 };
+  openForm({ title: id ? "Mittel bearbeiten" : "Neues Mittel", data: m, fields: [
+    { k: "name", l: "Handelsname", req: true }, { k: "wirkstoff", l: "Wirkstoff", list: ["Ameisensäure", "Oxalsäure", "Milchsäure", "Thymol", "Sonstiges"] },
+    { t: "row", fs: [{ k: "wzHonig", l: "Wartezeit Honig (Tage)", t: "num" }, { k: "zulassung", l: "Zul.-Nr." }] },
+    { k: "dosierung", l: "Dosierung / Anwendung" }, { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => { put("mittel", { ...m, ...o }); toast("Gespeichert"); }, onDelete: id ? () => del("mittel", id) : null });
+}
+function openBeh(id) { formBeh(id); }
+function formBeh(id) {
+  const b = id ? get("behandlungen", id) : { datum: today(), grund: "Varroa", voelkerIds: [] };
+  const mOpts = all("mittel").sort(byStr("name")).map(m => [m.id, m.name]);
+  openForm({ title: id ? "Behandlung bearbeiten" : "Neue Behandlung", data: b, fields: [
+    { k: "mittelId", l: "Mittel", t: "select", req: true, o: mOpts },
+    { t: "html", h: `<div class="sm wzinfo" style="margin:-4px 0 10px"></div>` },
+    { t: "row", fs: [{ k: "datum", l: "Beginn", t: "date", req: true }, { k: "bis", l: "Ende (bei Langzeit)", t: "date" }] },
+    { t: "row", fs: [{ k: "dosis", l: "Menge / Dosis je Volk", ph: "z. B. 30 ml" }, { k: "methode", l: "Methode", list: ["Verdunster", "Träufeln", "Sprühen", "Verdampfen", "Streifen", "Schwammtuch"] }] },
+    { t: "row", fs: [{ k: "grund", l: "Grund", list: ["Varroa", "Sommerbehandlung", "Winterbehandlung", "Restentmilbung"] }, { k: "charge", l: "Charge" }] },
+    { k: "bezug", l: "Bezug (Apotheke / Tierarzt, Datum)" },
+    { t: "html", h: d => volkPicker(d.voelkerIds || []) },
+    { t: "h", l: "Lager" },
+    { t: "row", fs: [{ k: "lagerId", l: "Vom Lager abbuchen", t: "select", ph: "– nicht abbuchen –", o: artOpts() }, { k: "lagerMenge", l: "Menge gesamt", t: "num" }] },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => {
+    o.voelkerIds = o.vk || []; delete o.vk;
+    if (!o.voelkerIds.length) { toast("Bitte mindestens ein Volk wählen"); return false; }
+    if (o.bis && o.bis < o.datum) { toast("Ende liegt vor dem Beginn"); return false; }
+    o.umfang = umfangText(o.voelkerIds);
+    const nb = { ...b, ...o }; nb.id = nb.id || uid();
+    const mi = get("mittel", o.mittelId);
+    autoLager(nb.id, o.lagerId, o.lagerMenge ? -Math.abs(o.lagerMenge) : 0, o.datum, "Behandlung: " + (mi?.name || ""));
+    put("behandlungen", nb); toast("Gespeichert");
+  }, onDelete: id ? () => { autoLager(id); del("behandlungen", id); } : null,
+  init: (s, form) => {
+    const upd = () => { const mi = get("mittel", form.mittelId.value); const wz = +(mi?.wzHonig || 0); const ende = form.bis.value || form.datum.value; form.querySelector(".wzinfo").textContent = mi ? `${mi.wirkstoff || ""}${mi.dosierung ? " · " + mi.dosierung : ""} · Wartezeit Honig: ${wz} Tage${wz && ende ? " → bis " + fmtD(addDays(ende, wz)) : ""}` : ""; };
+    form.addEventListener("change", upd); upd(); vpCount(form.querySelector(".vpc") || form);
+  } });
+}
+
+function formFutter(id) {
+  const f = id ? get("fuetterung", id) : { datum: today(), voelkerIds: [], art: "Zuckersirup", lagerId: "ar-sirup" };
+  openForm({ title: id ? "Fütterung bearbeiten" : "Fütterung", data: f, fields: [
+    { t: "row", fs: [{ k: "datum", l: "Datum", t: "date", req: true }, { k: "menge", l: "Menge je Volk (kg)", t: "num", req: true }] },
+    { k: "art", l: "Futterart", list: ["Zuckersirup", "Zuckerwasser 1:1", "Zuckerwasser 3:2", "Invertsirup", "Futterteig", "Honig"] },
+    { t: "html", h: d => volkPicker(d.voelkerIds || []) },
+    { k: "lagerId", l: "Vom Lager abbuchen", t: "select", ph: "– nicht abbuchen –", o: artOpts() },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => {
+    o.voelkerIds = o.vk || []; delete o.vk;
+    if (!o.voelkerIds.length) { toast("Bitte mindestens ein Volk wählen"); return false; }
+    o.umfang = umfangText(o.voelkerIds);
+    const nf = { ...f, ...o }; nf.id = nf.id || uid();
+    autoLager(nf.id, o.lagerId, -(o.menge || 0) * o.voelkerIds.length, o.datum, "Fütterung " + o.umfang);
+    put("fuetterung", nf); toast("Gespeichert");
+  }, onDelete: id ? () => { autoLager(id); del("fuetterung", id); } : null,
+  init: (s, form) => vpCount(form.querySelector(".vpc") || form) });
+}
+
+/* ------------------------------ Ernte ------------------------------ */
+const TRACHTEN = ["Frühtracht", "Raps", "Obstblüte", "Löwenzahn", "Sommertracht", "Linde", "Robinie (Akazie)", "Waldhonig", "Blütenhonig", "Sonstige"];
+const ernteKg = e => sum(e.posten || [], p => p.kg);
+VIEWS.ernte = () => {
+  const sub = ui.sub.ernte || "liste";
+  let h = seg("ernte", [["liste", "Ernten"], ["ausw", "Auswertung"]]);
+  if (sub === "ausw") return h + viewErnteAusw();
+  const es = all("ernte").filter(e => yFilter("erY", e.datum)).sort(byStr("datum")).reverse();
+  h += yearChips("erY", years("ernte"));
+  const tot = sum(es, ernteKg);
+  h += `<div class="tiles"><div class="tile"><div class="v">${kg(tot)}</div><div class="l">Honig gesamt</div></div><div class="tile"><div class="v">${es.length}</div><div class="l">Ernten / Schleuderungen</div></div></div>`;
+  h += es.map(e => { const ps = (e.posten || []).filter(p => p.kg || p.waben); const t = ernteKg(e); return `<div class="card tap" onclick="formErnte('${e.id}')"><div style="display:flex;align-items:baseline;gap:8px"><div style="flex:1"><b style="font-family:var(--slab);font-size:17px">${esc(e.tracht || "Ernte")}</b> <span class="sm">· ${fmtD(e.datum)} · 📍 ${esc(stName(e.standortId))}</span></div><b class="nw" style="font-size:18px">${kg(t)}</b></div>
+    <table class="t" style="margin-top:6px"><thead><tr><th>Volk</th><th class="r">Waben</th><th class="r">kg</th></tr></thead><tbody>${ps.map(p => `<tr><td>${esc(vName(p.volkId))}</td><td class="r">${p.waben != null ? fN(p.waben) : ""}</td><td class="r">${p.kg != null ? fN(p.kg) : ""}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>Σ ${ps.length} Völker · Ø ${kg(ps.length ? t / ps.length : 0)}</td><td class="r">${fN(sum(ps, p => p.waben))}</td><td class="r">${fN(t)}</td></tr></tfoot></table>
+    ${e.wasser != null || e.notiz ? `<div class="sm" style="margin-top:4px">${e.wasser != null ? "Wassergehalt " + fN(e.wasser) + " %" : ""}${e.notiz ? " · " + esc(e.notiz) : ""}</div>` : ""}</div>`; }).join("") || `<div class="empty">Keine Ernte im gewählten Jahr.</div>`;
+  return h;
+};
+FABS.ernte = () => ["+ Ernte", () => formErnte()];
+function viewErnteAusw() {
+  const ys = years("ernte"), j = +F("eaY", thisYear()) || thisYear();
+  const es = all("ernte").filter(e => yearOf(e.datum) === j);
+  let h = yearChips("eaY", ys, false);
+  const stRows = standorte().map(s => { const e = es.filter(x => x.standortId === s.id); const k = sum(e, ernteKg); const n = new Set(e.flatMap(x => (x.posten || []).filter(p => p.kg).map(p => p.volkId))).size; return [s, k, n]; });
+  const tot = sum(stRows, r => r[1]);
+  h += `<h2>Je Standort ${j}</h2><div class="card"><table class="t"><thead><tr><th>Standort</th><th class="r">Völker</th><th class="r">kg</th><th class="r">Ø/Volk</th></tr></thead><tbody>${stRows.map(([s, k, n]) => `<tr><td>${esc(s.name)}</td><td class="r">${n}</td><td class="r"><b>${fN(k)}</b></td><td class="r">${n ? fN(k / n) : "–"}</td></tr>`).join("")}</tbody><tfoot><tr><td>Gesamt</td><td class="r">${sum(stRows, r => r[2])}</td><td class="r">${fN(tot)}</td><td class="r">${sum(stRows, r => r[2]) ? fN(tot / sum(stRows, r => r[2])) : "–"}</td></tr></tfoot></table></div>`;
+  const tr = {}; es.forEach(e => tr[e.tracht || "Sonstige"] = (tr[e.tracht || "Sonstige"] || 0) + ernteKg(e));
+  if (Object.keys(tr).length) { const mx = Math.max(...Object.values(tr)); h += `<h2>Je Tracht ${j}</h2><div class="card">${Object.entries(tr).sort((a, b) => b[1] - a[1]).map(([t, k]) => `<div style="padding:5px 0"><div style="display:flex"><span style="flex:1">${esc(t)}</span><b>${kg(k)}</b></div><div class="hb"><i style="width:${k / mx * 100}%"></i></div></div>`).join("")}</div>`; }
+  const vk = {}; es.forEach(e => (e.posten || []).forEach(p => { if (p.kg) vk[p.volkId] = (vk[p.volkId] || 0) + p.kg; }));
+  const vr = Object.entries(vk).sort((a, b) => b[1] - a[1]);
+  if (vr.length) { const mx = vr[0][1]; h += `<h2>Rangliste Völker ${j}</h2><div class="card">${vr.map(([id, k], i) => `<div class="row" onclick="openVolk('${id}')"><b style="min-width:24px">${i + 1}.</b><div class="grow"><div style="display:flex"><span style="flex:1" class="ell">${esc(vName(id))} <span class="sm">· ${esc(stName(vById(id)?.standortId))}</span></span><b>${kg(k)}</b></div><div class="hb"><i style="width:${k / mx * 100}%"></i></div></div></div>`).join("")}</div>`; }
+  const yv = ys.filter(y => y <= thisYear()).sort();
+  if (yv.length > 1) h += `<h2>Jahresvergleich je Standort</h2><div class="card" style="overflow-x:auto"><table class="t"><thead><tr><th>Standort</th>${yv.map(y => `<th class="r">${y}</th>`).join("")}</tr></thead><tbody>${standorte().map(s => `<tr><td>${esc(s.name)}</td>${yv.map(y => `<td class="r">${fN(sum(all("ernte").filter(e => e.standortId === s.id && yearOf(e.datum) === y), ernteKg), 0)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return h + honigChart();
+}
+function formErnte(id) {
+  const e = id ? get("ernte", id) : { datum: today(), standortId: F("erSt", "") || standorte()[0]?.id || "", posten: [], lagerId: "ar-honig" };
+  const rows = stId => {
+    const pm = {}; (e.posten || []).forEach(p => pm[p.volkId] = p);
+    const vs = voelker().filter(v => v.standortId === stId);
+    (e.posten || []).forEach(p => { if (!vs.some(v => v.id === p.volkId) && e.standortId === stId && vById(p.volkId)) vs.push(vById(p.volkId)); });
+    if (!vs.length) return `<div class="hint">Keine Völker an diesem Standort.</div>`;
+    return `<table class="t ernt"><thead><tr><th>Volk</th><th class="r" style="width:80px">Waben</th><th class="r" style="width:96px">kg</th></tr></thead><tbody>${vs.map(v => `<tr data-v="${v.id}"><td style="vertical-align:middle">${esc(vLabel(v))}</td><td><input data-k="waben" inputmode="decimal" value="${pm[v.id]?.waben != null ? String(pm[v.id].waben).replace(".", ",") : ""}"></td><td><input data-k="kg" inputmode="decimal" value="${pm[v.id]?.kg != null ? String(pm[v.id].kg).replace(".", ",") : ""}"></td></tr>`).join("")}</tbody><tfoot><tr><td>Summe</td><td class="r sw"></td><td class="r sk"></td></tr></tfoot></table>`;
+  };
+  openForm({ title: id ? "Ernte bearbeiten" : "Honigernte erfassen", data: e, fields: [
+    { t: "row", fs: [{ k: "datum", l: "Datum", t: "date", req: true }, { k: "tracht", l: "Tracht / Sorte", list: TRACHTEN }] },
+    { k: "standortId", l: "Standort", t: "select", req: true, empty: false, o: standorte().map(s => [s.id, s.name]) },
+    { t: "html", h: `<div class="f"><span class="fl">Menge je Volk (leer lassen = nicht geerntet)</span><div class="ernterows">${rows(e.standortId)}</div></div>` },
+    { t: "row", fs: [{ k: "wasser", l: "Wassergehalt %", t: "num" }, { k: "lagerId", l: "Ins Lager buchen", t: "select", ph: "– nicht buchen –", o: artOpts(["Honig"]) }] },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: (o, s) => {
+    const form = s.body.querySelector(".ernterows");
+    o.posten = [...form.querySelectorAll("tr[data-v]")].map(tr => ({ volkId: tr.dataset.v, waben: num(tr.querySelector('[data-k="waben"]').value), kg: num(tr.querySelector('[data-k="kg"]').value) })).filter(p => p.kg != null || p.waben != null);
+    if (!o.posten.length) { toast("Bitte mindestens eine Menge eintragen"); return false; }
+    ui.f.erSt = o.standortId; saveUi();
+    const ne = { ...e, ...o }; ne.id = ne.id || uid();
+    autoLager(ne.id, o.lagerId, ernteKg(ne), o.datum, "Ernte " + (o.tracht || "") + " " + stName(o.standortId));
+    put("ernte", ne); toast("Ernte gespeichert: " + kg(ernteKg(ne)));
+  }, onDelete: id ? () => { autoLager(id); del("ernte", id); } : null,
+  init: (s, form) => {
+    const tot = () => { const t = form.querySelector(".ernterows"); const g = k => sum([...t.querySelectorAll(`[data-k="${k}"]`)], i => num(i.value)); const sw = t.querySelector(".sw"), sk = t.querySelector(".sk"); if (sw) { sw.textContent = fN(g("waben")); sk.textContent = kg(g("kg")); } };
+    form.standortId.addEventListener("change", () => { form.querySelector(".ernterows").innerHTML = rows(form.standortId.value); tot(); });
+    form.addEventListener("input", tot); tot();
+  } });
+}
+
+/* ------------------------------ Lager ------------------------------ */
+const LKAT = ["Honig", "Gläser & Verpackung", "Futter", "Behandlungsmittel", "Wachs & Mittelwände", "Rähmchen & Beuten", "Sonstiges"];
+VIEWS.lager = () => {
+  const k = F("lK", "alle");
+  let as = all("artikel").filter(a => k === "alle" || (k === "warn" ? a.mindest != null && a.mindest !== "" && bestand(a.id) < +a.mindest : a.kategorie === k));
+  let h = chipsF("lK", [["alle", "Alle"], ["warn", "⚠ Nachkaufen"], ...LKAT.filter(c => all("artikel").some(a => a.kategorie === c)).map(c => [c, c])], k);
+  const katOf = a => LKAT.includes(a.kategorie) ? a.kategorie : a.kategorie ? "Sonstiges" : undefined;
+  const grp = LKAT.concat([undefined]).map(c => [c, as.filter(a => katOf(a) === c)]).filter(g => g[1].length);
+  h += grp.map(([c, list]) => `<h2>${esc(c || "Ohne Kategorie")}</h2><div class="card">${list.sort(byStr("name")).map(a => { const b = bestand(a.id); const low = a.mindest != null && a.mindest !== "" && b < +a.mindest; return `<div class="row" onclick="openArtikel('${a.id}')"><div class="grow"><div class="t1">${esc(a.name)}</div>${a.mindest != null && a.mindest !== "" ? `<div class="sm">Mindestbestand ${fN(+a.mindest)} ${esc(a.einheit)}</div>` : ""}</div><b class="nw ${low ? "badge b-red" : ""}" style="font-size:16px">${fN(b)} ${esc(a.einheit || "")}</b></div>`; }).join("")}</div>`).join("") || `<div class="empty">Keine Artikel</div>`;
+  return h;
+};
+FABS.lager = () => ["+ Artikel", () => formArtikel()];
+function formArtikel(id) {
+  const a = id ? get("artikel", id) : { einheit: "Stück", kategorie: F("lK", "alle") !== "alle" && F("lK") !== "warn" ? F("lK") : "" };
+  openForm({ title: id ? "Artikel bearbeiten" : "Neuer Artikel", data: a, fields: [
+    { k: "name", l: "Bezeichnung", req: true },
+    { t: "row", fs: [{ k: "kategorie", l: "Kategorie", t: "select", req: true, o: LKAT }, { k: "einheit", l: "Einheit", list: ["Stück", "kg", "l", "ml", "Packung", "Eimer"], req: true }] },
+    { t: "row", fs: [{ k: "mindest", l: "Mindestbestand", t: "num" }, ...(id ? [] : [{ k: "anfang", l: "Aktueller Bestand", t: "num" }])] },
+    { k: "notiz", l: "Notiz (Lieferant, Preis …)", t: "area" }
+  ], onSave: o => { const anf = o.anfang; delete o.anfang; const nid = put("artikel", { ...a, ...o }, true); if (!id && anf) put("lagerbew", { artikelId: nid, datum: today(), menge: anf, text: "Anfangsbestand" }, true); saveStore(); refresh(); toast("Gespeichert"); },
+  onDelete: id ? () => { all("lagerbew").filter(b => b.artikelId === id).forEach(b => del("lagerbew", b.id, true)); del("artikel", id); sheets.filter(s => s.artId === id).forEach(s => s.close()); } : null });
+}
+function openArtikel(id) {
+  const s = openSheet("Artikel", "", `<button class="btn btn2" onclick="formArtikel('${id}')">Bearbeiten</button><button class="btn btn2" onclick="formBew(null,'${id}',-1)">− Abgang</button><button class="btn" onclick="formBew(null,'${id}',1)">+ Zugang</button>`, { tapOut: true });
+  s.artId = id;
+  s.rerender = () => {
+    const a = get("artikel", id); if (!a) return s.close();
+    s.el.querySelector("h3").textContent = a.name;
+    const bw = all("lagerbew").filter(b => b.artikelId === id).sort((x, y) => (y.datum || "").localeCompare(x.datum || "") || (y.geaendert || "").localeCompare(x.geaendert || ""));
+    const b = bestand(id);
+    s.body.innerHTML = `<div class="tiles"><div class="tile"><div class="v">${fN(b)} <span style="font-size:15px">${esc(a.einheit)}</span></div><div class="l">Bestand</div></div><div class="tile"><div class="v">${a.mindest != null && a.mindest !== "" ? fN(+a.mindest) : "–"}</div><div class="l">Mindestbestand</div></div></div>
+    ${a.notiz ? `<div class="hint">${esc(a.notiz)}</div>` : ""}
+    <div class="btns"><button class="mini" onclick="formInventur('${id}')">🧮 Inventur (Bestand gezählt)</button></div>
+    <h4>Bewegungen</h4><div class="card">${bw.map(x => `<div class="row" onclick="${x.ref ? `toast('Automatisch gebucht – bitte im Ursprung ändern')` : `formBew('${x.id}')`}"><div class="nw" style="min-width:52px;font-weight:700">${fmtDs(x.datum)}<div class="sm">${yearOf(x.datum) || ""}</div></div><div class="grow sm" style="color:var(--tx)">${esc(x.text || "")}${x.ref ? ' <span class="sm">⚙︎</span>' : ""}</div><b class="nw" style="color:${x.menge < 0 ? "var(--red)" : "var(--ok)"}">${x.menge > 0 ? "+" : ""}${fN(x.menge, 2)}</b></div>`).join("") || `<div class="empty">Keine Bewegungen</div>`}</div>`;
+  };
+  s.rerender();
+}
+function formBew(id, artikelId, dir = 1) {
+  const b = id ? get("lagerbew", id) : { artikelId: artikelId || "", datum: today() };
+  const data = { ...b, menge: id ? Math.abs(b.menge) : "", richtung: id ? (b.menge < 0 ? "ab" : "zu") : (dir < 0 ? "ab" : "zu") };
+  openForm({ title: id ? "Lagerbewegung" : "Lagerbuchung", data, fields: [
+    { k: "artikelId", l: "Artikel", t: "select", req: true, o: artOpts() },
+    { k: "richtung", l: "Art", t: "chips", req: true, o: [["zu", "+ Zugang"], ["ab", "− Abgang"]] },
+    { t: "row", fs: [{ k: "menge", l: "Menge", t: "num", req: true }, { k: "datum", l: "Datum", t: "date", req: true }] },
+    { k: "text", l: "Text", list: ["Einkauf", "Verkauf", "Verbrauch", "Abgefüllt", "Bruch / Verlust", "Geschenk"] }
+  ], onSave: o => { o.menge = Math.abs(o.menge) * (o.richtung === "ab" ? -1 : 1); delete o.richtung; put("lagerbew", { ...b, ...o }); toast("Gebucht"); },
+  onDelete: id ? () => del("lagerbew", id) : null });
+}
+function formInventur(id) {
+  const a = get("artikel", id), b = bestand(id);
+  openForm({ title: "Inventur: " + a.name, data: { ist: b, datum: today() }, fields: [{ t: "html", h: `<div class="hint">Bestand laut Buch: <b>${fN(b)} ${esc(a.einheit)}</b></div>` }, { t: "row", fs: [{ k: "ist", l: "Gezählter Bestand", t: "num", req: true }, { k: "datum", l: "Datum", t: "date", req: true }] }],
+    onSave: o => { const d = (o.ist || 0) - b; if (Math.abs(d) < 1e-9) { toast("Bestand stimmt ✅"); return; } put("lagerbew", { artikelId: id, datum: o.datum, menge: Math.round(d * 1000) / 1000, text: "Inventur-Korrektur" }); toast("Korrigiert um " + (d > 0 ? "+" : "") + fN(d, 2)); } });
+}
+
+/* ------------------------------ Finanzen ------------------------------ */
+VIEWS.fin = () => {
+  const sub = ui.sub.fin || "buch";
+  let h = seg("fin", [["buch", "Buchungen"], ["ausw", "Auswertung"], ["kund", "Kunden"]]);
+  if (sub === "kund") return h + viewKunden();
+  const ys = years("finanzen"), j = F("fiY", thisYear());
+  h += yearChips("fiY", ys);
+  const fs = all("finanzen").filter(f => yFilter("fiY", f.datum));
+  const ein = sum(fs.filter(f => f.art === "ein" && imErgebnis(f) && !offen(f)), f => f.betrag), aus = sum(fs.filter(f => f.art === "aus" && !offen(f)), f => f.betrag), priv = sum(fs.filter(f => !imErgebnis(f) && !offen(f)), f => f.betrag);
+  h += `<div class="tiles"><div class="tile" onclick="setF('fiA','ein')"><div class="v" style="color:var(--ok)">${eur(ein)}</div><div class="l">Einnahmen</div></div><div class="tile" onclick="setF('fiA','aus')"><div class="v" style="color:var(--red)">${eur(aus)}</div><div class="l">Ausgaben</div></div><div class="tile"><div class="v" style="color:${ein - aus < 0 ? "var(--red)" : "var(--ok)"}">${eur(ein - aus)}</div><div class="l">Ergebnis ${j === "alle" ? "gesamt" : j}</div></div><div class="tile"><div class="v">${eur(priv)}</div><div class="l">Privateinlage (nicht im Ergebnis)</div></div></div>`;
+  if (sub === "ausw") return h + viewFinAusw(fs);
+  const a = F("fiA", "alle"), q = (F("fiQ", "") || "").toLowerCase();
+  let list = fs.filter(f => a === "alle" || (a === "offen" ? offen(f) : f.art === a));
+  if (q) list = list.filter(f => [f.text, f.kategorie, f.partner, f.notiz, get("kunden", f.kundeId)?.name].join(" ").toLowerCase().includes(q));
+  list.sort((x, y) => (y.datum || "").localeCompare(x.datum || "") || (+y.nr || 0) - (+x.nr || 0));
+  const nOff = fs.filter(offen).length;
+  h += `<input class="search" id="fiQ" type="search" placeholder="🔍 Text, Kategorie, Partner …" value="${esc(F("fiQ", ""))}" oninput="setSearch('fiQ',this)">`;
+  h += chipsF("fiA", [["alle", "Alle"], ["ein", "Einnahmen"], ["aus", "Ausgaben"], ["offen", "⏳ Betrag offen" + (nOff ? " (" + nOff + ")" : "")]], a);
+  h += `<div class="card">${list.map(f => `<div class="row" onclick="openFin('${f.id}')"><div class="nw sm" style="min-width:44px">${fmtDs(f.datum)}<br>#${esc(f.nr ?? "")}</div><div class="grow"><div class="t1 ell">${esc(f.text || f.kategorie)}</div><div class="sm ell">${esc(f.kategorie || "")}${f.kundeId ? " · " + esc(get("kunden", f.kundeId)?.name || "") : f.partner ? " · " + esc(f.partner) : ""}</div></div>${offen(f) ? '<span class="badge b-warn">⏳ offen</span>' : `<b class="nw" style="color:${f.art === "ein" ? "var(--ok)" : "var(--red)"}">${f.art === "ein" ? "+" : "−"}${eur(f.betrag)}</b>`}</div>`).join("") || `<div class="empty">Keine Buchungen</div>`}</div>
+  <div class="btns"><button class="btn btn2" onclick="csvFinanzen()">📄 CSV-Export</button></div>`;
+  return h;
+};
+FABS.fin = () => (ui.sub.fin === "kund" ? ["+ Kunde", () => formKunde()] : ["+ Buchung", () => formFin()]);
+function viewFinAusw(fs) {
+  const block = (art, title) => { const m = {}; fs.filter(f => f.art === art && !offen(f)).forEach(f => m[f.kategorie || "Sonstige"] = (m[f.kategorie || "Sonstige"] || 0) + f.betrag); const e = Object.entries(m).sort((a, b) => b[1] - a[1]); const mx = Math.max(1, ...e.map(x => x[1])); return `<h2>${title}</h2><div class="card">${e.map(([k, v]) => `<div style="padding:5px 0"><div style="display:flex"><span style="flex:1">${esc(k)}</span><b>${eur(v)}</b></div><div class="hb"><i style="width:${v / mx * 100}%;${art === "aus" ? "background:linear-gradient(90deg,#e0896b,#b3261e)" : ""}"></i></div></div>`).join("") || `<div class="empty">Keine</div>`}</div>`; };
+  const honigE = fs.filter(f => f.art === "ein" && f.kategorie === "Honigverkauf" && !offen(f));
+  const yr = F("fiY", thisYear()); const ernte = sum(all("ernte").filter(e => yr === "alle" || yearOf(e.datum) === +yr), ernteKg);
+  return block("ein", "Einnahmen nach Kategorie") + block("aus", "Ausgaben nach Kategorie") +
+    `<h2>Honig</h2><div class="card"><div class="kv"><div>Honigverkauf</div><div><b>${eur(sum(honigE, f => f.betrag))}</b>${sum(honigE, f => f.menge || 0) ? " · " + fN(sum(honigE, f => f.menge || 0)) + " Gläser" : ""}</div><div>Ernte</div><div>${kg(ernte)}</div><div>Erlös je kg Ernte</div><div>${ernte ? eur(sum(honigE, f => f.betrag) / ernte) : "–"}</div><div>Kosten je Volk</div><div>${voelker().length ? eur(sum(fs.filter(f => f.art === "aus" && !offen(f)), f => f.betrag) / voelker().length) : "–"}</div></div></div>`;
+}
+function openFin(id) { formFin(id); }
+function formFin(id, preset = {}) {
+  const j = thisYear();
+  const f = id ? get("finanzen", id) : { art: "aus", datum: today(), ...preset };
+  const kOpts = all("kunden").sort(byStr("name")).map(k => [k.id, k.name]);
+  const katFld = art => ({ k: "kategorie", l: "Kategorie", t: "select", req: true, o: art === "ein" ? KAT_EIN : KAT_AUS });
+  openForm({ title: id ? "Buchung #" + (f.nr ?? "") : "Neue Buchung", data: f, fields: [
+    { k: "art", l: "Art", t: "chips", req: true, o: [["ein", "➕ Einnahme"], ["aus", "➖ Ausgabe"]] },
+    { t: "row", fs: [{ k: "datum", l: "Datum", t: "date", req: true }, { k: "betrag", l: "Betrag € (leer = offen)", t: "num" }] },
+    { k: "text", l: "Text", req: true, ph: "z. B. 20 Gläser Frühtracht" },
+    { t: "html", h: d => `<div class="katbox">${fld(katFld(d.art), d)}</div>` },
+    { t: "row", fs: [{ k: "kundeId", l: "Kunde", t: "select", ph: "– kein Kunde –", o: kOpts }, { k: "partner", l: "oder Partner / Firma" }] },
+    { t: "h", l: "Lager mitbuchen (optional)" },
+    { t: "row", fs: [{ k: "lagerId", l: "Artikel", t: "select", ph: "– nicht buchen –", o: artOpts() }, { k: "menge", l: "Menge", t: "num" }] },
+    { t: "html", h: `<div class="sm lagerinfo" style="margin:-6px 0 10px"></div>` },
+    { k: "notiz", l: "Notiz", t: "area" }
+  ], onSave: o => {
+    if (o.betrag != null) o.betrag = Math.round(Math.abs(o.betrag) * 100) / 100;
+    const nf = { ...f, ...o }; nf.id = nf.id || uid();
+    if (!nf.nr || yearOf(f.datum) !== yearOf(o.datum)) nf.nr = nextFinNr(yearOf(o.datum));
+    autoLager(nf.id, o.lagerId, o.menge ? (o.art === "ein" ? -1 : 1) * Math.abs(o.menge) : 0, o.datum, (o.art === "ein" ? "Verkauf: " : "Einkauf: ") + o.text);
+    put("finanzen", nf); toast(offen(nf) ? "Gespeichert – Betrag offen ⏳" : "Gespeichert");
+  }, onDelete: id ? () => { autoLager(id); del("finanzen", id); } : null,
+  extra: id ? [{ label: "Kopie", fn: (o, s) => { s.close(); const c = { ...o }; formFin(null, { ...c, datum: today(), betrag: o.betrag }); } }] : [],
+  init: (s, form) => {
+    let lastArt = form.art.value;
+    const info = () => { form.querySelector(".lagerinfo").textContent = form.lagerId.value ? (form.art.value === "ein" ? "→ wird vom Lager abgebucht (Verkauf)" : "→ wird dem Lager zugebucht (Einkauf)") : ""; };
+    form.addEventListener("change", e => {
+      if (e.target.name === "art" && form.art.value !== lastArt) { lastArt = form.art.value; const kb = form.querySelector(".katbox"); kb.innerHTML = fld(katFld(lastArt), { kategorie: katVorschlag(lastArt, form.text.value) }); }
+      info();
+    });
+    form.text.addEventListener("input", () => { const k = katVorschlag(form.art.value, form.text.value); const sel = form.kategorie; if (k && !sel.dataset.touched) sel.value = k; });
+    form.addEventListener("change", e => { if (e.target.name === "kategorie") e.target.dataset.touched = 1; });
+    if (id) form.kategorie.dataset.touched = 1;
+    info();
+  } });
+}
+function viewKunden() {
+  const q = (F("kQ", "") || "").toLowerCase();
+  const ks = all("kunden").filter(k => !q || [k.name, k.ort, k.telefon, k.email].join(" ").toLowerCase().includes(q)).sort(byStr("name"));
+  return `<input class="search" id="kQ" type="search" placeholder="🔍 Kunde suchen" value="${esc(F("kQ", ""))}" oninput="setSearch('kQ',this)"><div class="card">${ks.map(k => { const fs = all("finanzen").filter(f => f.kundeId === k.id && f.art === "ein"); return `<div class="row" onclick="openKunde('${k.id}')"><div class="grow"><div class="t1">${esc(k.name)}</div><div class="sm">${esc([k.ort, k.telefon].filter(Boolean).join(" · "))}</div></div><div class="r"><b>${eur(sum(fs.filter(f => !offen(f)), f => f.betrag))}</b><div class="sm">${fs.length} Käufe</div></div></div>`; }).join("") || `<div class="empty">Keine Kunden</div>`}</div>`;
+}
+function formKunde(id) {
+  const k = id ? get("kunden", id) : {};
+  openForm({ title: id ? "Kunde bearbeiten" : "Neuer Kunde", data: k, fields: [
+    { k: "name", l: "Name", req: true }, { t: "row", fs: [{ k: "telefon", l: "Telefon", t: "tel" }, { k: "email", l: "E-Mail", t: "email" }] },
+    { k: "strasse", l: "Straße" }, { t: "row", fs: [{ k: "plz", l: "PLZ" }, { k: "ort", l: "Ort" }] }, { k: "notiz", l: "Notiz (Vorlieben, Vorbestellung …)", t: "area" }
+  ], onSave: o => { put("kunden", { ...k, ...o }); toast("Gespeichert"); }, onDelete: id ? () => { del("kunden", id); sheets.filter(s => s.kId === id).forEach(s => s.close()); } : null });
+}
+function openKunde(id) {
+  const s = openSheet("Kunde", "", `<button class="btn btn2" onclick="formKunde('${id}')">Bearbeiten</button><button class="btn" onclick="formFin(null,{art:'ein',kundeId:'${id}',kategorie:'Honigverkauf'})">+ Verkauf</button>`, { tapOut: true });
+  s.kId = id;
+  s.rerender = () => {
+    const k = get("kunden", id); if (!k) return s.close();
+    s.el.querySelector("h3").textContent = k.name;
+    const fs = all("finanzen").filter(f => f.kundeId === id).sort(byStr("datum")).reverse();
+    s.body.innerHTML = `<div class="card" style="background:var(--bg);box-shadow:none"><div class="kv">${k.telefon ? `<div>Telefon</div><div><a href="tel:${esc(k.telefon)}">${esc(k.telefon)}</a></div>` : ""}${k.email ? `<div>E-Mail</div><div><a href="mailto:${esc(k.email)}">${esc(k.email)}</a></div>` : ""}${k.strasse || k.ort ? `<div>Adresse</div><div>${esc(k.strasse || "")}<br>${esc((k.plz || "") + " " + (k.ort || ""))}</div>` : ""}${k.notiz ? `<div>Notiz</div><div>${esc(k.notiz)}</div>` : ""}<div>Umsatz</div><div><b>${eur(sum(fs.filter(f => f.art === "ein" && !offen(f)), f => f.betrag))}</b></div></div></div>
+    <h4>Käufe</h4><div class="card">${fs.map(f => `<div class="row" onclick="openFin('${f.id}')"><div class="nw sm" style="min-width:70px">${fmtD(f.datum)}</div><div class="grow">${esc(f.text)}</div>${offen(f) ? '<span class="badge b-warn">offen</span>' : `<b>${eur(f.betrag)}</b>`}</div>`).join("") || `<div class="empty">Noch keine Käufe</div>`}</div>`;
+  };
+  s.rerender();
+}
+
+/* ------------------------------ Imkerei / Menü ------------------------------ */
+VIEWS.imkerei = () => {
+  const m = meta();
+  return `<h2>Imkerei</h2><div class="card tap" onclick="formBetrieb()"><div class="kv">
+    <div>Imker/in</div><div><b>${esc(m.imker || "–")}</b></div>
+    <div>Anschrift</div><div>${esc(m.anschrift || "–")}${m.plzOrt ? "<br>" + esc(m.plzOrt) : ""}</div>
+    <div>Kontakt</div><div>${esc([m.telefon, m.email].filter(Boolean).join(" · ") || "–")}</div>
+    <div>Registrier-Nr.</div><div>${esc(m.regnr || "–")}</div>
+    <div>Imkerverein</div><div>${esc(m.verein || "–")}</div>
+    <div>Bienensachverst.</div><div>${esc(m.bsv || "–")}</div>
+    <div>Tierarzt</div><div>${esc(m.tierarzt || "–")}</div>
+    <div>Varroa-Grenze</div><div>${fN(+(m.varroaGrenze || 10))} Milben/Tag</div>
+    ${m.notiz ? `<div>Notizen</div><div>${esc(m.notiz)}</div>` : ""}
+  </div><div class="sm" style="margin-top:8px">✏️ Tippen zum Bearbeiten</div></div>
+  <h2>💾 Daten & Einstellungen</h2>
+  <div class="card menu">
+    <div class="row" onclick="backupSave()"><b>💾</b><div class="grow">Sicherung speichern</div></div>
+    <div class="row" onclick="$('#fileIn').click()"><b>📂</b><div class="grow">Sicherung einlesen</div></div>
+    <div class="row" onclick="openExports()"><b>📄</b><div class="grow">CSV-Exporte (für Excel)</div></div>
+    <div class="row" onclick="go('voelker','stand')"><b>📍</b><div class="grow">Standorte verwalten</div></div>
+    <div class="row" onclick="openSync()"><b>☁️</b><div class="grow">Synchronisierung<div class="sm">${esc(syncState().long)}</div></div></div>
+    <div class="row" onclick="openVersion()"><b>📒</b><div class="grow">Versionsbuch<div class="sm">installiert: v${APP_VERSION}</div></div></div>
+    <div class="row" onclick="changePw()"><b>🔑</b><div class="grow">App-Passwort ${lockCfg() ? "ändern" : "festlegen"}</div></div>
+    ${lockCfg() ? `<div class="row" onclick="lockNow()"><b>🔒</b><div class="grow">Jetzt sperren</div></div>` : ""}
+  </div>`;
+};
+function formBetrieb() {
+  const m = meta();
+  openForm({ title: "Imkerei-Stammdaten", data: m, fields: [
+    { k: "imker", l: "Imker/in" }, { k: "anschrift", l: "Straße" }, { k: "plzOrt", l: "PLZ / Ort" },
+    { t: "row", fs: [{ k: "telefon", l: "Telefon", t: "tel" }, { k: "email", l: "E-Mail", t: "email" }] },
+    { k: "regnr", l: "Registriernummer (Veterinäramt)" }, { k: "verein", l: "Imkerverein" },
+    { k: "bsv", l: "Bienensachverständige/r" }, { k: "tierarzt", l: "Tierarzt / Apotheke" },
+    { k: "varroaGrenze", l: "Hinweis ab Varroa (Milben/Tag)", t: "num" },
+    { k: "notiz", l: "Notizen", t: "area" }
+  ], onSave: o => { put("meta", { ...m, ...o, id: "betrieb" }); toast("Gespeichert"); } });
+}
+
+/* ------------------------------ Export / Sicherung ------------------------------ */
+function download(name, text, type) { const b = new Blob([text], { type }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+function csv(name, head, rows) { const c = v => { v = v == null ? "" : typeof v === "number" ? String(v).replace(".", ",") : String(v); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }; download(name, "﻿" + [head, ...rows].map(r => r.map(c).join(";")).join("\r\n"), "text/csv;charset=utf-8"); toast("Export erstellt"); }
+function backupSave() { const d = { app: "bienenbuch", version: APP_VERSION, exportiert: nowIso(), daten: store }; download(`Bienenbuch_Sicherung_${today()}.json`, JSON.stringify(d, null, 1), "application/json"); toast("Sicherung gespeichert"); }
+$("#fileIn").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()); const d = j.daten || j;
+    let neu = 0, akt = 0, ueb = 0;
+    COLS.forEach(c => Object.values(d[c] || {}).forEach(x => {
+      if (!x || !x.id) return; const l = store[c][x.id];
+      if (!l && c === "voelker" && aktiv(x) && voelker().some(v => v.nr === x.nr)) { ueb++; return; }
+      if (!l) { store[c][x.id] = x; neu++; } else if ((x.geaendert || "") > (l.geaendert || "")) { store[c][x.id] = x; akt++; }
+    }));
+    saveStore(); refresh(); toast(`Eingelesen: ${neu} neu, ${akt} aktualisiert${ueb ? ", " + ueb + " Völker übersprungen (Nr. vorhanden)" : ""}`, 4500);
+  } catch (err) { toast("⚠️ Datei konnte nicht gelesen werden"); }
+});
+function openExports() {
+  const s = openSheet("CSV-Exporte", `<div class="card menu">
+    <div class="row" onclick="csvVoelker()"><b>🐝</b><div class="grow">Völker & Königinnen</div></div>
+    <div class="row" onclick="csvStock()"><b>📋</b><div class="grow">Stockkarte (Durchsichten)</div></div>
+    <div class="row" onclick="csvBestandsbuch()"><b>🧪</b><div class="grow">Bestandsbuch Behandlungen</div></div>
+    <div class="row" onclick="csvFutter()"><b>🥄</b><div class="grow">Fütterung</div></div>
+    <div class="row" onclick="csvErnte()"><b>🍯</b><div class="grow">Honigernte (je Volk)</div></div>
+    <div class="row" onclick="csvLager()"><b>📦</b><div class="grow">Lagerbestand</div></div>
+    <div class="row" onclick="csvFinanzen()"><b>💶</b><div class="grow">Finanzen</div></div></div>`, "", { tapOut: true });
+}
+const csvVoelker = () => csv(`Voelker_${today()}.csv`, ["Nr", "Name", "Standort", "Beute", "Zargen", "Herkunft", "Seit", "Muttervolk", "Königin Jahrgang", "Rasse", "Königin Herkunft", "Status", "Abgang", "Grund", "Eigenschaften", "Notiz"], voelker(false).map(v => { const k = koenigin(v.id) || {}; return [v.nr, v.name, stName(v.standortId), v.beute, v.zargen, v.herkunft, fmtD(v.entstanden), v.muttervolkId ? vName(v.muttervolkId) : "", k.jahr, k.rasse, k.herkunft, v.status || "aktiv", fmtD(v.abgang), v.abgangGrund, v.auff, v.notiz]; }));
+const csvStock = () => csv(`Stockkarte_${today()}.csv`, ["Datum", "Volk", "Standort", "Königin", "Wabengassen", "Brutwaben", "Sanftmut", "Wabensitz", "Schwarmtrieb", "Futter", "Honigräume", "Varroa/Tag", "Maßnahmen", "Notiz"], all("durchsichten").sort(byStr("datum")).map(d => [fmtD(d.datum), vName(d.volkId), stName(vById(d.volkId)?.standortId), d.koenigin, d.waben, d.brut, d.sanftmut, d.wabensitz, d.schwarm, d.futter, d.honigraum, d.varroa, d.massnahmen, d.notiz]));
+const csvBestandsbuch = () => csv(`Bestandsbuch_Behandlungen_${today()}.csv`, ["Beginn", "Ende", "Mittel", "Wirkstoff", "Zul.-Nr.", "Charge", "Bezug", "Menge/Dosis", "Methode", "Grund", "Völker", "Anzahl Völker", "Wartezeit Honig (Tage)", "Wartezeit bis", "Notiz"], all("behandlungen").sort(byStr("datum")).map(b => { const m = get("mittel", b.mittelId) || {}; const wz = +(m.wzHonig || 0); return [fmtD(b.datum), fmtD(b.bis), m.name, m.wirkstoff, m.zulassung, b.charge, b.bezug, b.dosis, b.methode, b.grund, (b.voelkerIds || []).map(vName).join(", "), (b.voelkerIds || []).length, wz, fmtD(addDays(b.bis || b.datum, wz)), b.notiz]; }));
+const csvFutter = () => csv(`Fuetterung_${today()}.csv`, ["Datum", "Futterart", "kg je Volk", "Anzahl Völker", "kg gesamt", "Völker", "Notiz"], all("fuetterung").sort(byStr("datum")).map(f => [fmtD(f.datum), f.art, f.menge, (f.voelkerIds || []).length, (f.menge || 0) * (f.voelkerIds || []).length, (f.voelkerIds || []).map(vName).join(", "), f.notiz]));
+const csvErnte = () => csv(`Honigernte_${today()}.csv`, ["Datum", "Tracht", "Standort", "Volk", "Waben", "kg", "Wassergehalt %", "Notiz"], all("ernte").sort(byStr("datum")).flatMap(e => (e.posten || []).map(p => [fmtD(e.datum), e.tracht, stName(e.standortId), vName(p.volkId), p.waben, p.kg, e.wasser, e.notiz])));
+const csvLager = () => csv(`Lager_${today()}.csv`, ["Artikel", "Kategorie", "Bestand", "Einheit", "Mindestbestand", "Notiz"], all("artikel").sort(byStr("name")).map(a => [a.name, a.kategorie, bestand(a.id), a.einheit, a.mindest, a.notiz]));
+const csvFinanzen = () => csv(`Finanzen_${today()}.csv`, ["Lfd. Nr.", "Datum", "Art", "Kategorie", "Text", "Betrag", "Kunde/Partner", "Menge", "Notiz"], all("finanzen").sort((a, b) => (a.datum || "").localeCompare(b.datum || "") || (+a.nr || 0) - (+b.nr || 0)).map(f => [f.nr, fmtD(f.datum), f.art === "ein" ? "Einnahme" : "Ausgabe", f.kategorie, f.text, offen(f) ? "" : (f.art === "ein" ? 1 : -1) * f.betrag, get("kunden", f.kundeId)?.name || f.partner, f.menge, f.notiz]));
+
+/* ============================== Versionsbuch ============================== */
+function ghInfo() { const h = location.hostname; if (!h.endsWith(".github.io")) return null; const user = h.split(".")[0]; const repo = location.pathname.split("/").filter(Boolean)[0] || h; return { user, repo }; }
+async function onlineVersion() {
+  const g = ghInfo(); if (!g) return null;
+  for (const br of ["main", "master"]) {
+    try { const r = await fetch(`https://raw.githubusercontent.com/${g.user}/${g.repo}/${br}/index.html?t=${Date.now()}`, { cache: "no-store" }); if (r.ok) { const m = (await r.text()).match(/APP_VERSION\s*=\s*"([^"]+)"/); if (m) return m[1]; } } catch (e) {}
+  }
+  return null;
+}
+const cmpVer = (a, b) => { const x = a.split(".").map(Number), y = b.split(".").map(Number); for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); return 0; };
+function openVersion() {
+  const s = openSheet("Versionsbuch", `<div class="card"><div class="kv"><div>Installiert</div><div><b>v${APP_VERSION}</b></div><div>Online</div><div class="onv">wird geprüft …</div></div><div class="btns upbtn" hidden><button class="btn" onclick="doUpdate()">⬇️ Jetzt aktualisieren</button></div></div><div class="cl">${CHANGELOG.map(c => `<h5>Version ${c.v} <span class="sm">· ${fmtD(c.d)}</span></h5><ul>${c.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`).join("")}</div>`, "", { tapOut: true });
+  onlineVersion().then(v => { const el = s.el.querySelector(".onv"); if (!v) { el.textContent = ghInfo() ? "nicht erreichbar (offline?)" : "– (nicht auf GitHub Pages)"; return; } el.innerHTML = `<b>v${esc(v)}</b> ${cmpVer(v, APP_VERSION) > 0 ? '<span class="badge b-warn">Update verfügbar</span>' : '<span class="badge b-ok">aktuell</span>'}`; if (cmpVer(v, APP_VERSION) > 0) s.el.querySelector(".upbtn").hidden = false; });
+}
+async function doUpdate() {
+  toast("Aktualisiere …");
+  try { const regs = await navigator.serviceWorker?.getRegistrations(); for (const r of regs || []) await r.update(); const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } catch (e) {}
+  location.reload();
+}
+function checkNewVersion() {
+  const last = localStorage.getItem(LS_VER);
+  localStorage.setItem(LS_VER, APP_VERSION);
+  if (last && last !== APP_VERSION) {
+    const neu = CHANGELOG.filter(c => cmpVer(c.v, last) > 0);
+    if (neu.length) openSheet("🎉 Neu in Version " + APP_VERSION, `<div class="cl">${neu.map(c => `<h5>Version ${c.v}</h5><ul>${c.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`).join("")}</div>`, `<button class="btn" onclick="this.closest('.ov').querySelector('.x').click()">Prima!</button>`, { tapOut: true });
+  }
+  onlineVersion().then(v => { if (v && cmpVer(v, APP_VERSION) > 0) toast("⬇️ Update v" + v + " verfügbar – Imkerei › Versionsbuch", 4000); });
+}
+
+/* ============================== App-Sperre ============================== */
+function sha256js(s) {
+  s = unescape(encodeURIComponent(s));
+  const K = [], H = []; let n = 2, c = 0;
+  const isP = x => { for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+  const frac = x => ((x - Math.floor(x)) * 4294967296) | 0;
+  while (c < 64) { if (isP(n)) { if (c < 8) H[c] = frac(Math.pow(n, 1 / 2)); K[c] = frac(Math.pow(n, 1 / 3)); c++; } n++; }
+  const l = s.length * 8; s += "\x80"; while (s.length % 64 - 56) s += "\x00";
+  const w = []; for (let i = 0; i < s.length; i++) w[i >> 2] |= s.charCodeAt(i) << ((3 - i % 4) * 8);
+  w.push((l / 4294967296) | 0, l | 0);
+  const r = (x, k) => (x >>> k) | (x << (32 - k));
+  let h = H.slice();
+  for (let j = 0; j < w.length; j += 16) {
+    const W = w.slice(j, j + 16); let [a, b, cc, d, e, f, g, hh] = h;
+    for (let i = 0; i < 64; i++) {
+      if (i >= 16) { const x = W[i - 15], y = W[i - 2]; W[i] = (W[i - 16] + (r(x, 7) ^ r(x, 18) ^ (x >>> 3)) + W[i - 7] + (r(y, 17) ^ r(y, 19) ^ (y >>> 10))) | 0; }
+      const t1 = (hh + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & f) ^ (~e & g)) + K[i] + W[i]) | 0;
+      const t2 = ((r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & b) ^ (a & cc) ^ (b & cc))) | 0;
+      hh = g; g = f; f = e; e = (d + t1) | 0; d = cc; cc = b; b = a; a = (t1 + t2) | 0;
+    }
+    h = [a, b, cc, d, e, f, g, hh].map((x, i) => (x + h[i]) | 0);
+  }
+  return h.map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
+}
+async function sha256(s) {
+  try { if (crypto?.subtle) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); } } catch (e) {}
+  return sha256js(s);
+}
+const lockCfg = () => { try { return JSON.parse(localStorage.getItem(LS_LOCK)); } catch (e) { return null; } };
+let hiddenAt = 0, locked = false;
+function showLock(mode) {
+  locked = true; const L = $("#lock"); L.hidden = false;
+  const set = mode === "set";
+  L.innerHTML = `<div class="box"><img src="icon-192.png" alt=""><h2>Bienenbuch</h2>
+    ${set ? `<p class="sm" style="margin-top:-6px">Lege ein Passwort fest, das die App auf diesem Gerät schützt.</p><input type="password" id="pw1" placeholder="Neues Passwort" autocomplete="new-password"><input type="password" id="pw2" placeholder="Passwort wiederholen" autocomplete="new-password">`
+      : `<input type="password" id="pw1" placeholder="Passwort" autocomplete="current-password">`}
+    <button class="btn" id="pwOk">${set ? "Festlegen" : "Entsperren"}</button>
+    ${set ? `<button class="linkbtn" id="pwSkip">${lockCfg() ? "Abbrechen" : "Ohne Passwort nutzen"}</button>` : ""}
+    <div class="sm" id="pwMsg" style="margin-top:8px;color:var(--red)"></div></div>`;
+  const msg = t => $("#pwMsg").textContent = t;
+  const ok = async () => {
+    const p1 = $("#pw1").value;
+    if (set) {
+      if (p1.length < 4) return msg("Mindestens 4 Zeichen");
+      if (p1 !== $("#pw2").value) return msg("Passwörter stimmen nicht überein");
+      const salt = uid() + uid(); localStorage.setItem(LS_LOCK, JSON.stringify({ salt, hash: await sha256(salt + p1) })); localStorage.setItem("bienenbuch_nolock", "");
+      unlock(); toast("Passwort festgelegt 🔒");
+    } else {
+      const c = lockCfg(); if (c && (await sha256(c.salt + p1)) === c.hash) unlock(); else { msg("Falsches Passwort"); $("#pw1").value = ""; }
+    }
+  };
+  $("#pwOk").onclick = ok;
+  L.querySelectorAll("input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") ok(); }));
+  const sk = $("#pwSkip"); if (sk) sk.onclick = () => { if (!lockCfg()) localStorage.setItem("bienenbuch_nolock", "1"); unlock(); };
+  setTimeout(() => $("#pw1")?.focus(), 100);
+}
+function unlock() { locked = false; $("#lock").hidden = true; $("#lock").innerHTML = ""; }
+function lockNow() { if (lockCfg()) showLock("unlock"); }
+function changePw() { if (lockCfg()) { showLock("unlock"); const orig = $("#pwOk").onclick; $("#pwOk").onclick = async () => { const c = lockCfg(); if ((await sha256(c.salt + $("#pw1").value)) === c.hash) showLock("set"); else $("#pwMsg").textContent = "Falsches Passwort"; }; } else showLock("set"); }
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) hiddenAt = Date.now();
+  else if (hiddenAt && Date.now() - hiddenAt > 5 * 60 * 1000 && lockCfg() && !locked) showLock("unlock");
+});
+
+/* ============================== Cloud-Sync (Firebase) ============================== */
+let FB = null, user = null, syncErr = "", unsubs = [], firstDone = {}, pushT = null, fbLoading = false;
+const getFbConfig = () => { if (FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId) return FIREBASE_CONFIG; try { const c = JSON.parse(localStorage.getItem(LS_FB)); return c && c.apiKey ? c : null; } catch (e) { return null; } };
+function syncState() {
+  if (!getFbConfig()) return { icon: "💾", short: "lokal", long: "Nur auf diesem Gerät (kein Cloud-Sync eingerichtet)" };
+  if (syncErr) return { icon: "⚠️", short: "Fehler", long: "Sync-Fehler: " + syncErr };
+  if (!FB) return { icon: "⏳", short: "…", long: fbLoading ? "Verbinde …" : "Cloud nicht geladen (offline?)" };
+  if (!user) return { icon: "🔑", short: "anmelden", long: "Nicht angemeldet – bitte unter ☁️ anmelden" };
+  if (!navigator.onLine) return { icon: "📴", short: "offline", long: "Offline – Änderungen werden später übertragen" };
+  const ready = COLS.every(c => firstDone[c]);
+  return ready ? { icon: "☁️", short: "synchron", long: "Synchron mit der Cloud (" + user.email + ")" } : { icon: "🔄", short: "lädt", long: "Gleiche ab …" };
+}
+async function fbInit() {
+  const cfg = getFbConfig(); if (!cfg || FB || fbLoading) return;
+  fbLoading = true; updHeader();
+  try {
+    const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/`;
+    const [appM, authM, fsM] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")]);
+    const app = appM.initializeApp(cfg);
+    const auth = authM.getAuth(app);
+    let db;
+    try { db = fsM.initializeFirestore(app, { localCache: fsM.persistentLocalCache({ tabManager: fsM.persistentMultipleTabManager() }) }); }
+    catch (e) { db = fsM.getFirestore(app); }
+    FB = { app, auth, db, authM, fsM };
+    authM.onAuthStateChanged(auth, u => { user = u; syncErr = ""; if (u) startListeners(); else stopListeners(); refresh(); });
+  } catch (e) { syncErr = ""; console.warn("Firebase nicht geladen", e); }
+  fbLoading = false; updHeader();
+}
+function stopListeners() { unsubs.forEach(u => u()); unsubs = []; firstDone = {}; }
+function startListeners() {
+  stopListeners();
+  const { collection, onSnapshot } = FB.fsM;
+  COLS.forEach(c => unsubs.push(onSnapshot(collection(FB.db, "users", user.uid, c), { includeMetadataChanges: true }, snap => onSnap(c, snap), err => { syncErr = err.code === "permission-denied" ? "keine Berechtigung (Regeln/UID prüfen)" : err.message; updHeader(); })));
+}
+const isSeed = d => (d.geaendert || "") < "2001";
+function onSnap(c, snap) {
+  const sh = shadow[c] = shadow[c] || {}, loc = store[c];
+  let changed = false;
+  if (!firstDone[c]) {
+    if (snap.metadata.fromCache) return; // auf echten Server-Stand warten
+    const remote = {}; snap.forEach(d => remote[d.id] = { ...d.data(), id: d.id });
+    for (const id in remote) {
+      const r = remote[id], l = loc[id];
+      if (l) { if ((l.geaendert || "") <= (r.geaendert || "")) { if (JSON.stringify(l) !== JSON.stringify(r)) { loc[id] = r; changed = true; } } }
+      else if (sh[id]) { const old = JSON.parse(sh[id]); if ((r.geaendert || "") > (old.geaendert || "")) { loc[id] = r; changed = true; } } // sonst: lokal gelöscht → wird in der Cloud gelöscht
+      else { loc[id] = r; changed = true; }
+      sh[id] = JSON.stringify(r);
+    }
+    for (const id in loc) if (!(id in remote)) {
+      if (sh[id]) { delete loc[id]; delete sh[id]; changed = true; }               // in der Cloud gelöscht
+      else if (snap.size > 0 && isSeed(loc[id])) { delete loc[id]; changed = true; } // Vorbelegung, Cloud hat schon Daten
+    }
+    firstDone[c] = true;
+  } else {
+    snap.docChanges().forEach(ch => {
+      const id = ch.doc.id;
+      if (ch.type === "removed") { if (loc[id] && JSON.stringify(loc[id]) === sh[id]) { delete loc[id]; changed = true; } delete sh[id]; }
+      else { const r = { ...ch.doc.data(), id }, l = loc[id]; if (!l || (r.geaendert || "") >= (l.geaendert || "")) { if (JSON.stringify(l) !== JSON.stringify(r)) { loc[id] = r; changed = true; } } sh[id] = JSON.stringify(r); }
+    });
+  }
+  saveShadow();
+  if (changed) { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} }
+  schedulePush();
+  if (changed) refresh(); else updHeader();
+}
+function schedulePush() { clearTimeout(pushT); pushT = setTimeout(syncPush, 700); }
+function syncPush() {
+  if (!FB || !user) return;
+  const { doc, setDoc, deleteDoc } = FB.fsM;
+  let n = 0;
+  for (const c of COLS) {
+    if (!firstDone[c]) continue;
+    const sh = shadow[c] = shadow[c] || {}, loc = store[c];
+    for (const id in loc) { const j = JSON.stringify(loc[id]); if (sh[id] !== j) { sh[id] = j; n++; setDoc(doc(FB.db, "users", user.uid, c, id), JSON.parse(j)).catch(e => { syncErr = e.message; updHeader(); }); } }
+    for (const id in sh) if (!(id in loc)) { delete sh[id]; n++; deleteDoc(doc(FB.db, "users", user.uid, c, id)).catch(e => { syncErr = e.message; updHeader(); }); }
+  }
+  if (n) saveShadow();
+  updHeader();
+}
+function parseFbConfig(t) {
+  const o = {}; ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId"].forEach(k => { const m = t.match(new RegExp(k + "\\s*[:=]\\s*[\"']([^\"']+)[\"']")); if (m) o[k] = m[1]; });
+  return o.apiKey && o.projectId ? o : null;
+}
+function openSync() {
+  const s = openSheet("☁️ Synchronisierung", "", "", { tapOut: true });
+  s.rerender = () => {
+    const st = syncState(), cfg = getFbConfig();
+    s.body.innerHTML = `<div class="hint">${st.icon} ${esc(st.long)}</div>
+    ${!cfg ? `<p class="sm">Für den Abgleich zwischen iPhone, iPad und PC wird ein (kostenloses) Firebase-Projekt benötigt – siehe Anleitung. Den Konfigurations-Text aus der Firebase-Konsole hier einfügen:</p>
+      <textarea id="fbCfg" placeholder="const firebaseConfig = { apiKey: ... }" style="min-height:120px;font-size:13px"></textarea>
+      <div class="btns"><button class="btn" id="fbSave">Übernehmen</button></div>`
+    : !user ? `<form onsubmit="return false"><label class="f"><span>E-Mail</span><input id="fbMail" type="email" autocomplete="username"></label><label class="f"><span>Passwort</span><input id="fbPw" type="password" autocomplete="current-password"></label><div class="btns"><button class="btn" id="fbLogin">Anmelden</button></div></form>
+      ${!FB ? `<p class="sm">Firebase wird geladen … (Internet nötig)</p>` : ""}`
+    : `<div class="kv"><div>Angemeldet</div><div>${esc(user.email)}</div><div>Projekt</div><div>${esc(cfg.projectId)}</div></div>
+      <div class="btns"><button class="btn btn2" id="fbOut">Abmelden</button></div>`}
+    ${cfg && !FIREBASE_CONFIG.apiKey ? `<button class="linkbtn" id="fbReset">Firebase-Konfiguration entfernen</button>` : ""}
+    <p class="sm">Daten liegen zusätzlich immer auf dem Gerät – die App funktioniert auch ohne Netz.</p>`;
+    const q = sel => s.body.querySelector(sel);
+    q("#fbSave") && (q("#fbSave").onclick = () => { const c = parseFbConfig(q("#fbCfg").value); if (!c) return toast("Konfiguration nicht erkannt"); localStorage.setItem(LS_FB, JSON.stringify(c)); fbInit().then(() => s.rerender()); s.rerender(); });
+    q("#fbLogin") && (q("#fbLogin").onclick = async () => {
+      if (!FB) { await fbInit(); if (!FB) return toast("Keine Verbindung"); }
+      try { await FB.authM.signInWithEmailAndPassword(FB.auth, q("#fbMail").value.trim(), q("#fbPw").value); toast("Angemeldet ✅"); }
+      catch (e) { toast(/invalid|wrong|not-found/.test(e.code || "") ? "E-Mail oder Passwort falsch" : "Anmeldung fehlgeschlagen: " + (e.code || e.message), 4000); }
+    });
+    q("#fbOut") && (q("#fbOut").onclick = async () => { await FB.authM.signOut(FB.auth); toast("Abgemeldet"); });
+    q("#fbReset") && (q("#fbReset").onclick = () => { localStorage.removeItem(LS_FB); location.reload(); });
+  };
+  s.rerender();
+}
+window.addEventListener("online", () => { updHeader(); schedulePush(); });
+window.addEventListener("offline", updHeader);
+
+/* ============================== Start ============================== */
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});
+refresh();
+if (lockCfg()) showLock("unlock"); else if (!localStorage.getItem("bienenbuch_nolock")) showLock("set");
+checkNewVersion();
+fbInit();
+</script>
+</body>
+</html>
